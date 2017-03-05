@@ -14,6 +14,7 @@
 		086B36211E6BEDBA00D8DDDB /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 086B361F1E6BEDBA00D8DDDB /* LaunchScreen.storyboard */; };
 		086B362C1E6BEDBB00D8DDDB /* MeetupForFitnessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086B362B1E6BEDBB00D8DDDB /* MeetupForFitnessTests.swift */; };
 		086B36371E6BEDBB00D8DDDB /* MeetupForFitnessUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086B36361E6BEDBB00D8DDDB /* MeetupForFitnessUITests.swift */; };
+		086B36461E6C064500D8DDDB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086B36451E6C064500D8DDDB /* MapKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +48,7 @@
 		086B36321E6BEDBB00D8DDDB /* MeetupForFitnessUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MeetupForFitnessUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		086B36361E6BEDBB00D8DDDB /* MeetupForFitnessUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetupForFitnessUITests.swift; sourceTree = "<group>"; };
 		086B36381E6BEDBB00D8DDDB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		086B36451E6C064500D8DDDB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +56,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				086B36461E6C064500D8DDDB /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +84,7 @@
 				086B362A1E6BEDBB00D8DDDB /* MeetupForFitnessTests */,
 				086B36351E6BEDBB00D8DDDB /* MeetupForFitnessUITests */,
 				086B36141E6BEDBA00D8DDDB /* Products */,
+				086B36441E6C064500D8DDDB /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -123,6 +127,14 @@
 				086B36381E6BEDBB00D8DDDB /* Info.plist */,
 			);
 			path = MeetupForFitnessUITests;
+			sourceTree = "<group>";
+		};
+		086B36441E6C064500D8DDDB /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				086B36451E6C064500D8DDDB /* MapKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -512,6 +524,7 @@
 				086B363D1E6BEDBB00D8DDDB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		086B363E1E6BEDBB00D8DDDB /* Build configuration list for PBXNativeTarget "MeetupForFitnessTests" */ = {
 			isa = XCConfigurationList;
@@ -520,6 +533,7 @@
 				086B36401E6BEDBB00D8DDDB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		086B36411E6BEDBB00D8DDDB /* Build configuration list for PBXNativeTarget "MeetupForFitnessUITests" */ = {
 			isa = XCConfigurationList;
@@ -528,6 +542,7 @@
 				086B36431E6BEDBB00D8DDDB /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
