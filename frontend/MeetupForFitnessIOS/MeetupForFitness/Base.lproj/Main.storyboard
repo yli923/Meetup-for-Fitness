@@ -279,7 +279,9 @@
                             <constraint firstAttribute="trailing" secondItem="Cuq-0b-7iX" secondAttribute="trailing" id="lTh-U0-3yq"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Activies" id="F1S-ze-Ju7"/>
+                    <tabBarItem key="tabBarItem" title="Activies" image="tab_activities" id="F1S-ze-Ju7">
+                        <inset key="imageInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                    </tabBarItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lLh-bx-Kvx" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -431,7 +433,9 @@
                             <constraint firstItem="pUd-cl-ZBu" firstAttribute="leading" secondItem="ECd-0r-soX" secondAttribute="leadingMargin" constant="11" id="yhy-oS-OYK"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Create new" id="Us5-r0-s1q"/>
+                    <tabBarItem key="tabBarItem" title="Create new" image="tab_createNew" id="Us5-r0-s1q">
+                        <inset key="imageInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                    </tabBarItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="vhk-xq-2ZJ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -575,7 +579,9 @@
                             <constraint firstItem="2Zo-KJ-nH6" firstAttribute="top" secondItem="Pfr-0t-V1S" secondAttribute="bottom" id="iOp-dg-Zqs"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Social" id="3fz-M2-yC4"/>
+                    <tabBarItem key="tabBarItem" title="Social" image="tab_Social" id="3fz-M2-yC4">
+                        <inset key="imageInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                    </tabBarItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NKF-HB-L58" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -750,7 +756,9 @@
                             <constraint firstItem="Zhy-xD-ehQ" firstAttribute="top" secondItem="imV-sW-5oW" secondAttribute="bottom" constant="8" id="zoe-Dy-U31"/>
                         </constraints>
                     </view>
-                    <tabBarItem key="tabBarItem" title="Profile" id="HhA-nQ-YDh"/>
+                    <tabBarItem key="tabBarItem" title="Profile" image="tab_profile" id="HhA-nQ-YDh">
+                        <inset key="imageInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                    </tabBarItem>
                     <navigationItem key="navigationItem" id="nto-7Z-uxL"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="C9N-ML-5YE" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1429,7 +1437,9 @@
                             </tableViewCell>
                         </prototypes>
                     </tableView>
-                    <tabBarItem key="tabBarItem" title="My activities" id="Xck-Nh-xFR"/>
+                    <tabBarItem key="tabBarItem" title="My activities" image="tab_myActivities" id="Xck-Nh-xFR">
+                        <inset key="imageInsets" minX="5" minY="5" maxX="5" maxY="5"/>
+                    </tabBarItem>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="NjK-kv-d9f" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -1444,9 +1454,14 @@
         <image name="image" width="16" height="16"/>
         <image name="photo" width="98" height="98"/>
         <image name="stars" width="97" height="17"/>
+        <image name="tab_Social" width="50" height="50"/>
+        <image name="tab_activities" width="50" height="50"/>
+        <image name="tab_createNew" width="50" height="50"/>
+        <image name="tab_myActivities" width="50" height="50"/>
+        <image name="tab_profile" width="50" height="50"/>
     </resources>
     <inferredMetricsTieBreakers>
         <segue reference="uvg-HR-PIo"/>
-        <segue reference="pcK-PM-0cU"/>
+        <segue reference="B5A-C8-rHb"/>
     </inferredMetricsTieBreakers>
 </document>
