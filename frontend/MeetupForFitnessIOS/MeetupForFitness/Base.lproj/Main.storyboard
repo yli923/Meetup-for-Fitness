@@ -94,8 +94,11 @@
                                     </segue>
                                 </connections>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="AppLogo" translatesAutoresizingMaskIntoConstraints="NO" id="OTF-Qt-HTq">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AppLogo" translatesAutoresizingMaskIntoConstraints="NO" id="OTF-Qt-HTq">
                                 <rect key="frame" x="34" y="65" width="306" height="128"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="128" id="AoM-zK-Jbm"/>
+                                </constraints>
                             </imageView>
                         </subviews>
                         <color key="backgroundColor" red="0.013426427729427814" green="0.92600518465042114" blue="0.99080938100814819" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -107,9 +110,11 @@
                             <constraint firstAttribute="trailingMargin" secondItem="tGK-hI-uPZ" secondAttribute="trailing" constant="19" id="Mck-ds-LCo"/>
                             <constraint firstItem="sW4-qq-Q3o" firstAttribute="centerX" secondItem="dyh-xG-BTu" secondAttribute="centerX" id="UCN-jx-Wh4"/>
                             <constraint firstItem="dyh-xG-BTu" firstAttribute="top" secondItem="vOX-Bn-alD" secondAttribute="bottom" constant="16" id="UIW-sq-bwV"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="OTF-Qt-HTq" secondAttribute="trailing" constant="19" id="VQw-ZK-kfC"/>
                             <constraint firstItem="tGK-hI-uPZ" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Wgr-oH-Ego"/>
                             <constraint firstItem="OTF-Qt-HTq" firstAttribute="centerX" secondItem="tGK-hI-uPZ" secondAttribute="centerX" id="YJt-rw-owT"/>
                             <constraint firstItem="dyh-xG-BTu" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="18" id="YVV-6I-myk"/>
+                            <constraint firstItem="OTF-Qt-HTq" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="18" id="YVf-d4-LIZ"/>
                             <constraint firstItem="w7I-sv-hbY" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="98" id="YkV-5v-2hM"/>
                             <constraint firstItem="OTF-Qt-HTq" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="45" id="ZaE-zl-Wvl"/>
                             <constraint firstAttribute="trailingMargin" secondItem="w7I-sv-hbY" secondAttribute="trailing" constant="99" id="bFw-Ou-k2M"/>
@@ -1461,7 +1466,7 @@
         <image name="tab_profile" width="50" height="50"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="uvg-HR-PIo"/>
+        <segue reference="TC2-9B-Tio"/>
         <segue reference="B5A-C8-rHb"/>
     </inferredMetricsTieBreakers>
 </document>
