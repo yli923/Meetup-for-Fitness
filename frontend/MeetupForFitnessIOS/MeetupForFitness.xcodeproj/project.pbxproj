@@ -15,6 +15,9 @@
 		086B362C1E6BEDBB00D8DDDB /* MeetupForFitnessTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086B362B1E6BEDBB00D8DDDB /* MeetupForFitnessTests.swift */; };
 		086B36371E6BEDBB00D8DDDB /* MeetupForFitnessUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086B36361E6BEDBB00D8DDDB /* MeetupForFitnessUITests.swift */; };
 		086B36461E6C064500D8DDDB /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 086B36451E6C064500D8DDDB /* MapKit.framework */; };
+		086B364A1E6E4E5400D8DDDB /* FoldingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086B36471E6E4E5400D8DDDB /* FoldingCell.swift */; };
+		086B364B1E6E4E5400D8DDDB /* MainTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086B36481E6E4E5400D8DDDB /* MainTableViewController.swift */; };
+		086B364C1E6E4E5400D8DDDB /* DemoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086B36491E6E4E5400D8DDDB /* DemoCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +52,9 @@
 		086B36361E6BEDBB00D8DDDB /* MeetupForFitnessUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MeetupForFitnessUITests.swift; sourceTree = "<group>"; };
 		086B36381E6BEDBB00D8DDDB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		086B36451E6C064500D8DDDB /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		086B36471E6E4E5400D8DDDB /* FoldingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoldingCell.swift; sourceTree = "<group>"; };
+		086B36481E6E4E5400D8DDDB /* MainTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTableViewController.swift; sourceTree = "<group>"; };
+		086B36491E6E4E5400D8DDDB /* DemoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,6 +111,9 @@
 				086B36181E6BEDBA00D8DDDB /* ViewController.swift */,
 				086B361A1E6BEDBA00D8DDDB /* Main.storyboard */,
 				086B361D1E6BEDBA00D8DDDB /* Assets.xcassets */,
+				086B36471E6E4E5400D8DDDB /* FoldingCell.swift */,
+				086B36481E6E4E5400D8DDDB /* MainTableViewController.swift */,
+				086B36491E6E4E5400D8DDDB /* DemoCell.swift */,
 				086B361F1E6BEDBA00D8DDDB /* LaunchScreen.storyboard */,
 				086B36221E6BEDBA00D8DDDB /* Info.plist */,
 			);
@@ -274,8 +283,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				086B364B1E6E4E5400D8DDDB /* MainTableViewController.swift in Sources */,
 				086B36191E6BEDBA00D8DDDB /* ViewController.swift in Sources */,
 				086B36171E6BEDBA00D8DDDB /* AppDelegate.swift in Sources */,
+				086B364A1E6E4E5400D8DDDB /* FoldingCell.swift in Sources */,
+				086B364C1E6E4E5400D8DDDB /* DemoCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
