@@ -197,7 +197,7 @@ def get_user_friends(userId):
 		db.close()
 		abort(400,"fail")
 
-@app.route('/friend/add/<userId>', methods=['POST'])
+@app.route('/friends/add/<userId>', methods=['POST'])
 def add_friends(userId):
 	if not request.json or not 'friendId' in request.json:
 		abort(400, '{"message":"Input parameter incorrect or missing"}')
