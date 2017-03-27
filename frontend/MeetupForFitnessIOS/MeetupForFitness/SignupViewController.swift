@@ -9,7 +9,7 @@
 import UIKit
 import Alamofire
 
-class SignupViewController: UIViewController {
+class SignupViewController: UIViewController, UITextFieldDelegate {
 
     
     @IBOutlet weak var userNameField: UITextField!
@@ -20,7 +20,10 @@ class SignupViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        userNameField.delegate = self
+        emailField.delegate = self
+        passwordField.delegate = self
+        reenterPasswordField.delegate = self
         // Do any additional setup after loading the view.
     }
 
@@ -82,6 +85,16 @@ class SignupViewController: UIViewController {
     
     func notifyFailure(info: String) {
         self.sendAlart(info: info)
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        self.view.endEditing(true)
+        return true;
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        self.view.endEditing(true)
+        
     }
     
     
