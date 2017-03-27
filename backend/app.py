@@ -49,16 +49,16 @@ def auth_signup():
 	cursor = db.cursor()
 	cursor.execute("SELECT * FROM User WHERE username = '%s'"%username)
 	if cursor.rowcount == 0:
-		#try:
-		cursor.execute("INSERT INTO User(username,password,gender,email,avatarURL,description) values (%s,%s,%s,%s,%s,%s)",[username,password,gender,email,avatarURL,description])
-		userId = cursor.lastrowid
-		db.commit()
-		db.close()
+		try:
+			cursor.execute("INSERT INTO User(username,password,gender,email,avatarURL,description) values (%s,%s,%s,%s,%s,%s)",[username,password,gender,email,avatarURL,description])
+			userId = cursor.lastrowid
+			db.commit()
+			db.close()
 		return json.dumps({'insert successful':True,'userId':userId})
-		#except:
-		#	db.rollback()
-		#	db.close()
-	   	#	abort(400, '{"message":"insert unsuccessful"}')
+		except:
+			db.rollback()
+			db.close()
+	   		abort(400, '{"message":"insert unsuccessful"}')
 	else:
 		db.rollback()
 		db.close()
