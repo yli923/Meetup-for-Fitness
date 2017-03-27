@@ -35,8 +35,8 @@ def auth_login():
 		db.close()
 		return json.dumps({'existing user':False}) 
 
-@app.route('/user/info', methods=['POST'])
-def add_user_info():
+@app.route('/auth/signup', methods=['POST'])
+def auth_signup():
 	if not request.json or not 'username' in request.json or not 'password' in request.json or not 'gender' in request.json or not 'email' in request.json or not 'avatarURL' in request.json or not 'description' in request.json:
 		abort(400, '{"message":"Input parameter incorrect or missing"}')
 	username = request.json['username']
@@ -49,16 +49,16 @@ def add_user_info():
 	cursor = db.cursor()
 	cursor.execute("SELECT * FROM User WHERE username = '%s'"%username)
 	if cursor.rowcount == 0:
-		try:
-			cursor.execute("INSERT INTO User(username,password,gender,email,avatarURL,description) values (%s,%s,%s,%s,%s,%s)",[username,password,gender,email,avatarURL,description])
-			userId = cursor.lastrowid
-			db.commit()
-			db.close()
-			return 'Insert User Info Success'
-		except:
-			db.rollback()
-			db.close()
-	   		abort(400, '{"message":"insert unsuccessful"}')
+		#try:
+		cursor.execute("INSERT INTO User(username,password,gender,email,avatarURL,description) values (%s,%s,%s,%s,%s,%s)",[username,password,gender,email,avatarURL,description])
+		userId = cursor.lastrowid
+		db.commit()
+		db.close()
+		return json.dumps({'insert successful':True,'userId':userId})
+		#except:
+		#	db.rollback()
+		#	db.close()
+	   	#	abort(400, '{"message":"insert unsuccessful"}')
 	else:
 		db.rollback()
 		db.close()
