@@ -79,11 +79,10 @@ def get_all_activity():
 			aInfo = aRow[3]
 			location = aRow[4]
 			aTime = aRow[5]
-			duration = aRow[6]
-			postTime = aRow[7]
-			sportsId = aRow[8]
-			maxPeople = aRow[9]
-			teamId = aRow[10]
+			postTime = aRow[6]
+			sportsId = aRow[7]
+			maxPeople = aRow[8]
+			teamId = aRow[9]
 			sportsCur = db.cursor()
 			sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
 			sportsType = [item[0] for item in sportsCur.fetchall()]
@@ -95,7 +94,6 @@ def get_all_activity():
 				currentActivity['aInfo'] = aInfo
 				currentActivity['location'] = location
 				currentActivity['aTime'] = aTime
-				currentActivity['duration'] = duration
 				currentActivity['postTime'] = postTime
 				currentActivity['sportsType'] = sportsType
 				currentActivity['maxPeople'] = maxPeople
@@ -111,7 +109,6 @@ def get_all_activity():
 				currentActivity['aInfo'] = aInfo
 				currentActivity['location'] = location
 				currentActivity['aTime'] = aTime
-				currentActivity['duration'] = duration
 				currentActivity['postTime'] = postTime
 				currentActivity['sportsType'] = sportsType
 				currentActivity['maxPeople'] = maxPeople
@@ -123,13 +120,12 @@ def get_all_activity():
 
 @app.route('/activity/add/allInfo/<userId>', methods=['POST'])
 def add_activity(userId):
-	if not request.json or not 'aName' in request.json or not 'aInfo' in request.json or not 'location' in request.json or not 'aTime' in request.json or not 'duration' in request.json or not 'sportsType' in request.json or not 'maxPeople' in request.json or not 'teamId' in request.json: 
+	if not request.json or not 'aName' in request.json or not 'aInfo' in request.json or not 'location' in request.json or not 'aTime' in request.json or not 'sportsType' in request.json or not 'maxPeople' in request.json or not 'teamId' in request.json: 
 		abort(400, '{"message":"Input parameter incorrect or missing"}')
 	aName = request.json['aName']
 	aInfo = request.json['aInfo']
 	location = request.json['location']
 	aTime = request.json['aTime']
-	duration = request.json['duration']
 	sportsType = request.json['sportsType']
 	maxPeople = request.json['maxPeople']
 	teamId = request.json['teamId']
@@ -139,7 +135,7 @@ def add_activity(userId):
 	cursor.execute("SELECT sportsId FROM SportsType WHERE sportsType = '%s'"%sportsType)
 	sportsId = [item[0] for item in cursor.fetchall()]
 	try:
-		cursor.execute("INSERT INTO Activity(userId,aName,aInfo,location,aTime,duration,postTime,sportsId,maxPeople,teamId) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",[userId,aName,aInfo,location,aTime,duration,postTime,sportsId,maxPeople,teamId])
+		cursor.execute("INSERT INTO Activity(userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)",[userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId])
 		aid = cursor.lastrowid
 		db.commit()
 		db.close()
@@ -177,11 +173,10 @@ def get_user_activity(userId):
 			aInfo = aRow[2]
 			location = aRow[3]
 			aTime = aRow[4]
-			duration = aRow[5]
-			postTime = aRow[6]
-			sportsId = aRow[7]
-			maxPeople = aRow[8]
-			isTeam = aRow[9]
+			postTime = aRow[5]
+			sportsId = aRow[6]
+			maxPeople = aRow[7]
+			isTeam = aRow[8]
 			sportsCur = db.cursor()
 			sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
 			sportsType = [item[0] for item in sportsCur.fetchall()]
@@ -192,11 +187,10 @@ def get_user_activity(userId):
 			currentActivity['aInfo'] = aInfo
 			currentActivity['location'] = location
 			currentActivity['aTime'] = aTime
-			currentActivity['duration'] = duration
 			currentActivity['postTime'] = postTime
 			currentActivity['sportsType'] = sportsType
 			currentActivity['maxPeople'] = maxPeople
-			currentActivity['isTeam'] = isTeam
+			currentActivity['teamId'] = teamId
 			activityList.append(currentActivity)
 	db.close()
 	return jsonify({'activities':activityList})
