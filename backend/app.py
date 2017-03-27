@@ -58,11 +58,11 @@ def auth_signup():
 		except:
 			db.rollback()
 			db.close()
-	   		abort(400, '{"message":"insert unsuccessful"}')
+	   		abort(400, '{Insert unsuccessful!!!"}')
 	else:
 		db.rollback()
 		db.close()
-		abort(400, '{"message":"user exists"}')
+		abort(400, '{fail: user exists!!!}')
 
 @app.route('/activity', methods=['GET'])
 def get_all_activity():	
@@ -79,49 +79,63 @@ def get_all_activity():
 			aInfo = aRow[3]
 			location = aRow[4]
 			aTime = aRow[5]
-			duration = aRow[6]
-			postTime = aRow[7]
-			sportsId = aRow[8]
-			maxPeople = aRow[9]
-			isTeam = aRow[10]
+			postTime = aRow[6]
+			sportsId = aRow[7]
+			maxPeople = aRow[8]
+			teamId = aRow[9]
 			sportsCur = db.cursor()
 			sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
 			sportsType = [item[0] for item in sportsCur.fetchall()]
-			currentActivity = {}
-			currentActivity['userId'] = userId
-			currentActivity['aid'] = aid
-			currentActivity['aName'] = aName
-			currentActivity['aInfo'] = aInfo
-			currentActivity['location'] = location
-			currentActivity['aTime'] = aTime
-			currentActivity['duration'] = duration
-			currentActivity['postTime'] = postTime
-			currentActivity['sportsType'] = sportsType
-			currentActivity['maxPeople'] = maxPeople
-			currentActivity['isTeam'] = isTeam
-			activityList.append(currentActivity)
+			if teamId == -1:
+				currentActivity = {}
+				currentActivity['userId'] = userId
+				currentActivity['aid'] = aid
+				currentActivity['aName'] = aName
+				currentActivity['aInfo'] = aInfo
+				currentActivity['location'] = location
+				currentActivity['aTime'] = aTime
+				currentActivity['postTime'] = postTime
+				currentActivity['sportsType'] = sportsType
+				currentActivity['maxPeople'] = maxPeople
+				activityList.append(currentActivity)
+			else:
+				teamCur = db.cursor()
+				teamCur.execute("SELECT tName FROM TeamInfo WHERE teamId = '%s'" %teamId)
+				tName = [item[0] for item in teamCur.fetchall()]
+				currentActivity = {}
+				currentActivity['userId'] = userId
+				currentActivity['aid'] = aid
+				currentActivity['aName'] = aName
+				currentActivity['aInfo'] = aInfo
+				currentActivity['location'] = location
+				currentActivity['aTime'] = aTime
+				currentActivity['postTime'] = postTime
+				currentActivity['sportsType'] = sportsType
+				currentActivity['maxPeople'] = maxPeople
+				currentActivity['teamId'] = teamId
+				currentActivity['teamName'] = tName
+				activityList.append(currentActivity)
 	db.close()
 	return jsonify({'activities':activityList})
 
 @app.route('/activity/add/allInfo/<userId>', methods=['POST'])
 def add_activity(userId):
-	if not request.json or not 'aName' in request.json or not 'aInfo' in request.json or not 'location' in request.json or not 'aTime' in request.json or not 'duration' in request.json or not 'sportsType' in request.json or not 'maxPeople' in request.json or not 'isTeam' in request.json: 
+	if not request.json or not 'aName' in request.json or not 'aInfo' in request.json or not 'location' in request.json or not 'aTime' in request.json or not 'sportsType' in request.json or not 'maxPeople' in request.json or not 'teamId' in request.json: 
 		abort(400, '{"message":"Input parameter incorrect or missing"}')
 	aName = request.json['aName']
 	aInfo = request.json['aInfo']
 	location = request.json['location']
 	aTime = request.json['aTime']
-	duration = request.json['duration']
 	sportsType = request.json['sportsType']
 	maxPeople = request.json['maxPeople']
-	isTeam = request.json['isTeam']
+	teamId = request.json['teamId']
 	postTime = datetime.datetime.now()
 	db = mysql.connect()
 	cursor = db.cursor()
 	cursor.execute("SELECT sportsId FROM SportsType WHERE sportsType = '%s'"%sportsType)
 	sportsId = [item[0] for item in cursor.fetchall()]
 	try:
-		cursor.execute("INSERT INTO Activity(userId,aName,aInfo,location,aTime,duration,postTime,sportsId,maxPeople,isTeam) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",[userId,aName,aInfo,location,aTime,duration,postTime,sportsId,maxPeople,isTeam])
+		cursor.execute("INSERT INTO Activity(userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)",[userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId])
 		aid = cursor.lastrowid
 		db.commit()
 		db.close()
@@ -159,11 +173,10 @@ def get_user_activity(userId):
 			aInfo = aRow[2]
 			location = aRow[3]
 			aTime = aRow[4]
-			duration = aRow[5]
-			postTime = aRow[6]
-			sportsId = aRow[7]
-			maxPeople = aRow[8]
-			isTeam = aRow[9]
+			postTime = aRow[5]
+			sportsId = aRow[6]
+			maxPeople = aRow[7]
+			isTeam = aRow[8]
 			sportsCur = db.cursor()
 			sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
 			sportsType = [item[0] for item in sportsCur.fetchall()]
@@ -174,11 +187,10 @@ def get_user_activity(userId):
 			currentActivity['aInfo'] = aInfo
 			currentActivity['location'] = location
 			currentActivity['aTime'] = aTime
-			currentActivity['duration'] = duration
 			currentActivity['postTime'] = postTime
 			currentActivity['sportsType'] = sportsType
 			currentActivity['maxPeople'] = maxPeople
-			currentActivity['isTeam'] = isTeam
+			currentActivity['teamId'] = teamId
 			activityList.append(currentActivity)
 	db.close()
 	return jsonify({'activities':activityList})
