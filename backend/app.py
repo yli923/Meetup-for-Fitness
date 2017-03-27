@@ -54,7 +54,7 @@ def auth_signup():
 			userId = cursor.lastrowid
 			db.commit()
 			db.close()
-		return json.dumps({'insert successful':True,'userId':userId})
+			return json.dumps({'insert successful':True,'userId':userId})
 		except:
 			db.rollback()
 			db.close()
