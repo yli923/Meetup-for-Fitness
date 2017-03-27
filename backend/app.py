@@ -33,7 +33,7 @@ def auth_login():
 	else: 
 		db.rollback()
 		db.close()
-		abort(400, '{"message":"login failed"}') 
+		return json.dumps({'existing user':False}) 
 
 @app.route('/user/info', methods=['POST'])
 def add_user_info():
