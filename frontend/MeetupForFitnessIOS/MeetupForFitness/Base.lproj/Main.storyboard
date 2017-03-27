@@ -75,7 +75,7 @@
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
                                 <connections>
-                                    <segue destination="eM2-5V-VE8" kind="show" id="TC2-9B-Tio"/>
+                                    <action selector="login:" destination="BYZ-38-t0r" eventType="touchUpInside" id="58H-aK-U8T"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="sW4-qq-Q3o">
@@ -133,15 +133,20 @@
                             <constraint firstItem="sW4-qq-Q3o" firstAttribute="top" secondItem="dyh-xG-BTu" secondAttribute="bottom" constant="8" id="zje-mT-1t0"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="passwordField" destination="vOX-Bn-alD" id="eI3-hE-1Pc"/>
+                        <outlet property="userNameField" destination="tGK-hI-uPZ" id="b7g-gx-XYJ"/>
+                        <segue destination="eM2-5V-VE8" kind="presentation" identifier="loginToMain" modalTransitionStyle="flipHorizontal" id="V0R-3f-eoy"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-106.40000000000001" y="135.38230884557723"/>
+            <point key="canvasLocation" x="-135" y="136"/>
         </scene>
         <!--SignUp-->
         <scene sceneID="NIn-Jh-I2d">
             <objects>
-                <viewController id="4DE-D7-wup" userLabel="SignUp" sceneMemberID="viewController">
+                <viewController id="4DE-D7-wup" userLabel="SignUp" customClass="SignupViewController" customModule="MeetupForFitness" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="LDd-Qf-45J"/>
                         <viewControllerLayoutGuide type="bottom" id="5cr-5J-B2V"/>
@@ -185,7 +190,7 @@
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
-                                    <segue destination="eM2-5V-VE8" kind="show" id="uvg-HR-PIo"/>
+                                    <action selector="signup:" destination="4DE-D7-wup" eventType="touchUpInside" id="AR9-Zm-oA1"/>
                                 </connections>
                             </button>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="AppLogo" translatesAutoresizingMaskIntoConstraints="NO" id="72a-bZ-Q1O">
@@ -206,7 +211,7 @@
                                     <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                 </state>
                                 <connections>
-                                    <segue destination="BYZ-38-t0r" kind="show" id="pcK-PM-0cU"/>
+                                    <segue destination="BYZ-38-t0r" kind="presentation" modalTransitionStyle="flipHorizontal" id="pcK-PM-0cU"/>
                                 </connections>
                             </button>
                         </subviews>
@@ -238,10 +243,17 @@
                             <constraint firstItem="RFF-rg-ja7" firstAttribute="top" secondItem="lQ9-GY-xw6" secondAttribute="bottom" constant="8" id="vv8-NT-4Ir"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="emailField" destination="lQ9-GY-xw6" id="QZJ-PA-sDq"/>
+                        <outlet property="passwordField" destination="RFF-rg-ja7" id="jWY-Vy-bSZ"/>
+                        <outlet property="reenterPasswordField" destination="kMo-ca-Jha" id="JdF-Dj-nhM"/>
+                        <outlet property="userNameField" destination="5R1-zy-Fhy" id="Vdq-Pp-tJa"/>
+                        <segue destination="eM2-5V-VE8" kind="presentation" identifier="signupToMain" modalTransitionStyle="flipHorizontal" id="NgB-3J-a5G"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="XWB-KI-mb2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-106.40000000000001" y="955.77211394302856"/>
+            <point key="canvasLocation" x="-135" y="956"/>
         </scene>
         <!--Activies-->
         <scene sceneID="CLx-8e-kgO">
@@ -1476,7 +1488,7 @@
         <image name="tab_profile" width="50" height="50"/>
     </resources>
     <inferredMetricsTieBreakers>
+        <segue reference="NgB-3J-a5G"/>
         <segue reference="pcK-PM-0cU"/>
-        <segue reference="TC2-9B-Tio"/>
     </inferredMetricsTieBreakers>
 </document>
