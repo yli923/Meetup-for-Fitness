@@ -18,6 +18,8 @@
 		086B364A1E6E4E5400D8DDDB /* FoldingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086B36471E6E4E5400D8DDDB /* FoldingCell.swift */; };
 		086B364B1E6E4E5400D8DDDB /* MainTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086B36481E6E4E5400D8DDDB /* MainTableViewController.swift */; };
 		086B364C1E6E4E5400D8DDDB /* DemoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086B36491E6E4E5400D8DDDB /* DemoCell.swift */; };
+		08AA01051E88C2F400CECC9B /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AA01041E88C2F400CECC9B /* SignupViewController.swift */; };
+		93D557B5025C2CE791E927AB /* Pods_MeetupForFitness.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 68DFEBBF6DF330B1887082DA /* Pods_MeetupForFitness.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +57,10 @@
 		086B36471E6E4E5400D8DDDB /* FoldingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoldingCell.swift; sourceTree = "<group>"; };
 		086B36481E6E4E5400D8DDDB /* MainTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTableViewController.swift; sourceTree = "<group>"; };
 		086B36491E6E4E5400D8DDDB /* DemoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoCell.swift; sourceTree = "<group>"; };
+		08AA01041E88C2F400CECC9B /* SignupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
+		68DFEBBF6DF330B1887082DA /* Pods_MeetupForFitness.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MeetupForFitness.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		B905928E9EA7D65542EF932A /* Pods-MeetupForFitness.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MeetupForFitness.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MeetupForFitness/Pods-MeetupForFitness.debug.xcconfig"; sourceTree = "<group>"; };
+		FDD34A4A6B050B334BC41DE0 /* Pods-MeetupForFitness.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MeetupForFitness.release.xcconfig"; path = "Pods/Target Support Files/Pods-MeetupForFitness/Pods-MeetupForFitness.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -63,6 +69,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				086B36461E6C064500D8DDDB /* MapKit.framework in Frameworks */,
+				93D557B5025C2CE791E927AB /* Pods_MeetupForFitness.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,6 +98,7 @@
 				086B36351E6BEDBB00D8DDDB /* MeetupForFitnessUITests */,
 				086B36141E6BEDBA00D8DDDB /* Products */,
 				086B36441E6C064500D8DDDB /* Frameworks */,
+				D97F9FFB4A3E3925224F27E9 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -116,6 +124,7 @@
 				086B36491E6E4E5400D8DDDB /* DemoCell.swift */,
 				086B361F1E6BEDBA00D8DDDB /* LaunchScreen.storyboard */,
 				086B36221E6BEDBA00D8DDDB /* Info.plist */,
+				08AA01041E88C2F400CECC9B /* SignupViewController.swift */,
 			);
 			path = MeetupForFitness;
 			sourceTree = "<group>";
@@ -142,8 +151,18 @@
 			isa = PBXGroup;
 			children = (
 				086B36451E6C064500D8DDDB /* MapKit.framework */,
+				68DFEBBF6DF330B1887082DA /* Pods_MeetupForFitness.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D97F9FFB4A3E3925224F27E9 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				B905928E9EA7D65542EF932A /* Pods-MeetupForFitness.debug.xcconfig */,
+				FDD34A4A6B050B334BC41DE0 /* Pods-MeetupForFitness.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -153,9 +172,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 086B363B1E6BEDBB00D8DDDB /* Build configuration list for PBXNativeTarget "MeetupForFitness" */;
 			buildPhases = (
+				21EA26B07B6AC830F940440C /* [CP] Check Pods Manifest.lock */,
 				086B360F1E6BEDBA00D8DDDB /* Sources */,
 				086B36101E6BEDBA00D8DDDB /* Frameworks */,
 				086B36111E6BEDBA00D8DDDB /* Resources */,
+				08A56216D96DEF17938EDEC0 /* [CP] Embed Pods Frameworks */,
+				44A85DD3F291D9F655C6E18D /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -278,11 +300,60 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		08A56216D96DEF17938EDEC0 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MeetupForFitness/Pods-MeetupForFitness-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		21EA26B07B6AC830F940440C /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		44A85DD3F291D9F655C6E18D /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "[CP] Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-MeetupForFitness/Pods-MeetupForFitness-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		086B360F1E6BEDBA00D8DDDB /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				08AA01051E88C2F400CECC9B /* SignupViewController.swift in Sources */,
 				086B364B1E6E4E5400D8DDDB /* MainTableViewController.swift in Sources */,
 				086B36191E6BEDBA00D8DDDB /* ViewController.swift in Sources */,
 				086B36171E6BEDBA00D8DDDB /* AppDelegate.swift in Sources */,
@@ -435,6 +506,7 @@
 		};
 		086B363C1E6BEDBB00D8DDDB /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = B905928E9EA7D65542EF932A /* Pods-MeetupForFitness.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = K5BR2FF6XK;
@@ -448,6 +520,7 @@
 		};
 		086B363D1E6BEDBB00D8DDDB /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = FDD34A4A6B050B334BC41DE0 /* Pods-MeetupForFitness.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				DEVELOPMENT_TEAM = K5BR2FF6XK;

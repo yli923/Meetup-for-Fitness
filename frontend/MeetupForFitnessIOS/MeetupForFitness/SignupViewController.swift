@@ -1,24 +1,27 @@
 //
-//  ViewController.swift
+//  SignupViewController.swift
 //  MeetupForFitness
 //
-//  Created by Mengyang Shi on 3/5/17.
+//  Created by Mengyang Shi on 3/26/17.
 //  Copyright © 2017 TFBOYZ. All rights reserved.
 //
 
 import UIKit
 import Alamofire
 
-class ViewController: UIViewController {
+class SignupViewController: UIViewController {
 
     
     @IBOutlet weak var userNameField: UITextField!
+    @IBOutlet weak var emailField: UITextField!
     @IBOutlet weak var passwordField: UITextField!
+    @IBOutlet weak var reenterPasswordField: UITextField!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+
+        // Do any additional setup after loading the view.
     }
 
     override func didReceiveMemoryWarning() {
@@ -26,34 +29,38 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    @IBAction func login(_ sender: Any) {
-        if userNameField.text! == "" || passwordField.text! == ""  {
+    @IBAction func signup(_ sender: Any) {
+        if userNameField.text! == "" || passwordField.text! == "" || emailField.text! == "" || reenterPasswordField.text! == "" || (passwordField.text! != reenterPasswordField.text!) {
             sendAlart(info: "Please fill in all blank fields before login!")
             return
         }
         
         let parameters: Parameters = [
             "username": userNameField.text ?? " ",
-            "password": passwordField.text ?? " "
+            "email": emailField.text ?? " ",
+            "password": passwordField.text ?? " ",
+            "gender": " ",
+            "avatarURL": " ",
+            "description": " "
         ]
-        Alamofire.request("http://@ec2-52-7-74-13.compute-1.amazonaws.com/auth/login", method: .post, parameters: parameters, encoding: JSONEncoding.default).validate().responseJSON { response in
+        Alamofire.request("http://@ec2-52-7-74-13.compute-1.amazonaws.com/auth/signup", method: .post, parameters: parameters, encoding: JSONEncoding.default).validate().responseJSON { response in
             switch response.result {
             case .success:
                 print("Validation Successful")
                 if let json = response.result.value {
                     print("JSON: \(json)")
                     let result = json as! NSDictionary
-                    let existUser = result["existing user"] as! Bool
-                    if existUser {
+                    let userId = result["userId"] as? Int
+                    if userId != nil {
                         //go to main page
                         print("login success")
                         let ud = UserDefaults.standard
-                        ud.set(result["userId"] as! Int, forKey: "userId")
+                        ud.set(userId, forKey: "userId")
                         ud.synchronize()
                         
-                        self.performSegue(withIdentifier: "loginToMain", sender: self)
+                        self.performSegue(withIdentifier: "signupToMain", sender: self)
                     } else {
-                        self.notifyFailure(info: "Username doesn't exist or password is not correct!")
+                        self.notifyFailure(info: "Unknown error when signing up!")
                     }
                 }
             case .failure(let error):
@@ -78,8 +85,14 @@ class ViewController: UIViewController {
     }
     
     
-    
+    /*
+    // MARK: - Navigation
 
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+    }
+    */
 
 }
-
