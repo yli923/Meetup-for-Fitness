@@ -58,11 +58,11 @@ def auth_signup():
 		except:
 			db.rollback()
 			db.close()
-	   		abort(400, '{"message":"insert unsuccessful"}')
+	   		abort(400, '{Insert unsuccessful!!!"}')
 	else:
 		db.rollback()
 		db.close()
-		abort(400, '{"message":"user exists"}')
+		abort(400, '{fail: user exists!!!}')
 
 @app.route('/activity', methods=['GET'])
 def get_all_activity():	
