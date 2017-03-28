@@ -147,7 +147,7 @@ def add_activity(userId):
 	except:
 		db.rollback()
 		db.close()
-		return("fail")
+		abort(400,"fail")
 
 @app.route('/activity/sportsType', methods=['GET'])
 def get_sportsType():
