@@ -22,21 +22,125 @@
 // THE SOFTWARE.
 
 import UIKit
+import Alamofire
 
 class MainTableViewController: UITableViewController {
     
     let kCloseCellHeight: CGFloat = 179
-    let kOpenCellHeight: CGFloat = 488
+    let kOpenCellHeight: CGFloat = 405
 
     let kRowsCount = 10
     
     var cellHeights = [CGFloat]()
+    
+    var myActivities = [Activity]()
+    var shownActivities = [Activity]()
+    var userId:Int!
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
         createCellHeightsArray()
         self.tableView.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
+        
+        userId = UserDefaults.standard.integer(forKey: "currentUserId")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.downloadMyActivities()
+    }
+    
+    func downloadMyActivities() {
+        Alamofire.request("http://@ec2-52-7-74-13.compute-1.amazonaws.com/activity/\(userId!)", method: .get, encoding: JSONEncoding.default).validate().responseJSON { response in
+            switch response.result {
+            case .success:
+                print("Validation Successful")
+                if let json = response.result.value {
+                    self.myActivities.removeAll()
+                    self.shownActivities.removeAll()
+                    
+                    print("JSON: \(json)")
+                    let result = json as! NSDictionary
+                    let array = result["activities"] as! [Dictionary<String, Any>]
+                    for dict in array {
+                        //print("dict ---> \(dict)")
+                        let activityName = dict["aName"] as! String
+                        let sportsType = (dict["sportsType"] as! [String]).first
+                        let teamNameArr = dict["teamName"] as? [String]
+                        let info = dict["aInfo"] as! String
+                        let aid = dict["aid"] as! Int
+                        let postTime = dict["postTime"] as! String
+                        let activityTime = dict["aTime"] as! String
+                        let userId = dict["userId"] as! Int
+                        var teamId = dict["teamId"] as? Int
+                        let maxAttendance = dict["maxPeople"] as! Int
+                        let attendedIds = dict["attended"] as! [Int]
+                        let location = dict["location"] as! String
+                        
+                        var teamName:String!
+                        if teamId == nil {
+                            teamId = -1
+                            teamName = ""
+                        } else {
+                            teamName = teamNameArr!.first
+                        }
+                        
+                        let newActivity = Activity(name: activityName, sportsType: sportsType!, teamName: teamName!, info: info, aid: aid, postTime: postTime, activityTime: activityTime, userId: userId, teamId: teamId!, maxAttendance: maxAttendance, attendedIds: attendedIds, location: location)
+                        
+                        self.myActivities.append(newActivity)
+                        
+                    }
+                    
+                    DispatchQueue.main.async(execute: {
+                        self.sortByDate()
+                        self.storeActivitiesToLocal()
+                        self.shownActivities = self.myActivities
+                        self.tableView.reloadData()
+                    })
+                }
+            case .failure(let error):
+                print(error)
+                if let httpResponse = response.response {
+                    if httpResponse.statusCode == 404 {
+                        self.notifyFailure(info: "Currently no activities!")
+                    } else {
+                        self.notifyFailure(info: "Cannot connect to server!")
+                    }
+                } else {
+                    self.notifyFailure(info: "Cannot connect to server!")
+                }
+                
+            }
+        }
+    }
+    
+    func sortByDate() {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEE, dd LLL yyyy HH:mm:ss z"
+        self.myActivities.sort(by: {dateFormatter.date(from: $0.postTime)! > dateFormatter.date(from: $1.postTime)!})
+    }
+    
+    func storeActivitiesToLocal() {
+        let activitiesToSave = myActivities.sorted(by: {$0.aid! < $1.aid!})
+        let encodedData: Data = NSKeyedArchiver.archivedData(withRootObject: activitiesToSave)
+        UserDefaults.standard.set(encodedData, forKey: "activities")
+        UserDefaults.standard.synchronize()
+    }
+    
+    func sendAlart(info: String) {
+        let alertController = UIAlertController(title: "Hey!", message: info, preferredStyle: UIAlertControllerStyle.alert)
+        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) {
+            (result : UIAlertAction) -> Void in
+            print("OK")
+        }
+        alertController.addAction(okAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func notifyFailure(info: String) {
+        self.sendAlart(info: info)
     }
     
     // MARK: configure
@@ -49,24 +153,57 @@ class MainTableViewController: UITableViewController {
     // MARK: - Table view data source
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 10
+        return shownActivities.count
     }
 
     override func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+
+        guard case let cell as DemoCell = cell else {
+            return
+        }
+
+        cell.backgroundColor = UIColor.clear
+
+        if cellHeights[(indexPath as NSIndexPath).row] == kCloseCellHeight {
+            cell.selectedAnimation(false, animated: false, completion:nil)
+        } else {
+            cell.selectedAnimation(true, animated: false, completion: nil)
+        }
+        
+        let currentActivity = shownActivities[indexPath.row]
       
-      guard case let cell as DemoCell = cell else {
-        return
-      }
-      
-      cell.backgroundColor = UIColor.clear
-      
-      if cellHeights[(indexPath as NSIndexPath).row] == kCloseCellHeight {
-        cell.selectedAnimation(false, animated: false, completion:nil)
-      } else {
-        cell.selectedAnimation(true, animated: false, completion: nil)
-      }
-      
-      cell.number = indexPath.row
+        cell.aid = currentActivity.aid
+        cell.activityName = currentActivity.name
+        cell.sportsType = currentActivity.sportsType
+        cell.info = currentActivity.info
+        cell.maxAttendance = currentActivity.maxAttendance
+        cell.ownerName = currentActivity.getOwnerName()
+        cell.location = currentActivity.location
+        cell.attended = currentActivity.getAttendedAmount()
+        
+        if currentActivity.isFull() {
+            cell.status = "Full"
+        } else {
+            cell.status = "Attended"
+        }
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEE, dd LLL yyyy HH:mm:ss z"
+        
+        let postTime = dateFormatter.date(from: currentActivity.postTime)
+        let activityTime = dateFormatter.date(from: currentActivity.activityTime)
+        
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+        cell.postDate = dateFormatter.string(from: postTime!)
+        cell.activityDate = dateFormatter.string(from: activityTime!)
+        
+        dateFormatter.dateStyle = .none
+        dateFormatter.timeStyle = .short
+        cell.postTime = dateFormatter.string(from: postTime!)
+        cell.activityTime = dateFormatter.string(from: activityTime!)
+        
+        
     }
 
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
