@@ -26,7 +26,7 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
     
     var matchingItems: [MKMapItem] = [MKMapItem]()
     
-    var friendsInvited = [String]()
+    var friendsInvitedIds = [Int]()
     
     let friendData = ["friend1","friend2","friend3"]
     
@@ -36,15 +36,18 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
         friendListTableView.dataSource = self
         
         maximumAttendanceField.delegate = self
+        acitivtyLocationField.delegate = self
+        
+        self.friendListTableView.allowsMultipleSelection = true
         // Do any additional setup after loading the view.
+        friendsInvitedIds.append(7)
+        friendsInvitedIds.append(8)
+        friendsInvitedIds.append(9)
+        friendsInvitedIds.append(15)
     }
     
     
-    @IBAction func searchOnMap(_ sender: AnyObject) {
-        _ = sender.resignFirstResponder()
-        mapView.removeAnnotations(mapView.annotations)
-        self.performSearch()
-    }
+    
     
     func performSearch() {
         
@@ -65,8 +68,8 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
                 print("Matches found")
                 
                 for item in response!.mapItems {
-                    print("Name = \(item.name)")
-                    print("Phone = \(item.phoneNumber)")
+                    print("Name = \(item.name!)")
+                    print("Phone = \(item.phoneNumber!)")
                     
                     self.matchingItems.append(item as MKMapItem)
                     print("Matching items = \(self.matchingItems.count)")
@@ -75,6 +78,9 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
                     annotation.coordinate = item.placemark.coordinate
                     annotation.title = item.name
                     self.mapView.addAnnotation(annotation)
+                    
+                    //zoom in here
+                    self.mapView.showAnnotations(self.mapView.annotations, animated: true)
                 }
             }
         })
@@ -93,12 +99,14 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
             "aTime": dateString,
             "sportsType": sportType,
             "maxPeople": maximumAttendanceField.text!,
-            "teamId": teamId
+            "teamId": teamId,
+            "friendList": friendsInvitedIds
         ]
+        print("param ---> \(parameters)")
         Alamofire.request("http://@ec2-52-7-74-13.compute-1.amazonaws.com/activity/add/allInfo/\(userId)", method: .post, parameters: parameters, encoding: JSONEncoding.default).validate().responseString { response in
             switch response.result {
             case .success:
-                print("Response String: \(response.result.value)")
+                print("Response String: \(response.result.value!)")
                 if response.result.value! == "success" {
                     self.performSegue(withIdentifier: "addActivitySuccess", sender: self)
                 } else {
@@ -141,18 +149,31 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
         let friendNameLabel = cell.contentView.viewWithTag(1) as! UILabel
         friendNameLabel.text = friendData[indexPath.row]
         
+        cell.accessoryType = cell.isSelected ? .checkmark : .none
+        cell.selectionStyle = .none // to prevent cells from being "highlighted"
+        
         return cell
         
     }
 
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
-        friendsInvited.append(friendData[indexPath.row])
-        tableView.cellForRow(at: indexPath)?.isHighlighted = true
+        tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
+        friendsInvitedIds.append(indexPath.row+1)
     }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        friendsInvitedIds.remove(at: friendsInvitedIds.index(of: indexPath.row+1)!)
+        tableView.cellForRow(at: indexPath)?.accessoryType = .none
+    }
+    
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         self.view.endEditing(true)
+        if textField == acitivtyLocationField {
+            mapView.removeAnnotations(mapView.annotations)
+            self.performSearch()
+        }
         return true;
     }
     
