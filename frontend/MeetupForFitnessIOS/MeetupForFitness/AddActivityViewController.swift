@@ -39,6 +39,9 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
         sportSelections.dataSource = self
         
         activityNameField.delegate = self
+        
+        selectedTeam = teamPickerData[0]
+        selectedSport = sportPickerData[0]
         // Do any additional setup after loading the view.
     }
 
