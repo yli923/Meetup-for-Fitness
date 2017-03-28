@@ -300,28 +300,7 @@
                                                     <rect key="frame" x="22" y="39" width="163" height="26"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" tag="4" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Activity Time" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dUB-Id-74m">
-                                                    <rect key="frame" x="22" y="140" width="331" height="26"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" tag="5" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Location" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rlg-bJ-4Ux">
-                                                    <rect key="frame" x="22" y="165" width="331" height="26"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
-                                                    <nil key="textColor"/>
-                                                    <nil key="highlightedColor"/>
-                                                </label>
-                                                <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="By: User/Team" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xxh-7v-vvd">
-                                                    <rect key="frame" x="22" y="87" width="233" height="26"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                    <fontDescription key="fontDescription" type="system" pointSize="19"/>
-                                                    <nil key="textColor"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                                 <label opaque="NO" userInteractionEnabled="NO" tag="6" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="0/10" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ONV-JV-YAy">
@@ -333,12 +312,45 @@
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="4" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Activity Time" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dUB-Id-74m">
+                                                    <rect key="frame" x="22" y="121" width="331" height="26"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="5" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Location" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="rlg-bJ-4Ux">
+                                                    <rect key="frame" x="22" y="146" width="331" height="26"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="3" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="By: User/Team" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xxh-7v-vvd">
+                                                    <rect key="frame" x="22" y="87" width="233" height="26"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                                    <nil key="textColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="8" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Post at: " textAlignment="right" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GiJ-y3-38E">
+                                                    <rect key="frame" x="8" y="173" width="359" height="26"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="height" constant="26" id="UFO-Zr-782"/>
+                                                    </constraints>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
                                             </subviews>
                                             <constraints>
                                                 <constraint firstItem="ONV-JV-YAy" firstAttribute="centerX" secondItem="Qgq-XL-d6d" secondAttribute="centerX" id="2qX-ph-yxg"/>
+                                                <constraint firstAttribute="bottom" secondItem="GiJ-y3-38E" secondAttribute="bottom" id="DVK-9a-hmX"/>
                                                 <constraint firstItem="Qgq-XL-d6d" firstAttribute="top" secondItem="ONV-JV-YAy" secondAttribute="bottom" constant="8" id="Pn6-Sm-oMb"/>
                                                 <constraint firstItem="Qgq-XL-d6d" firstAttribute="trailing" secondItem="mSS-pV-ZEv" secondAttribute="trailingMargin" id="SIS-B6-rZA"/>
+                                                <constraint firstItem="GiJ-y3-38E" firstAttribute="centerX" secondItem="mSS-pV-ZEv" secondAttribute="centerX" id="STI-My-hBx"/>
                                                 <constraint firstItem="Qgq-XL-d6d" firstAttribute="centerY" secondItem="mSS-pV-ZEv" secondAttribute="centerY" id="bx2-48-DDD"/>
+                                                <constraint firstAttribute="trailing" secondItem="GiJ-y3-38E" secondAttribute="trailing" constant="8" id="ty7-Wc-0z4"/>
                                                 <constraint firstItem="ONV-JV-YAy" firstAttribute="width" secondItem="Qgq-XL-d6d" secondAttribute="width" id="ycA-gY-bkJ"/>
                                             </constraints>
                                         </tableViewCellContentView>
@@ -1205,7 +1217,7 @@
                                                                 </userDefinedRuntimeAttribute>
                                                             </userDefinedRuntimeAttributes>
                                                         </view>
-                                                        <imageView userInteractionEnabled="NO" alpha="0.94999999999999996" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="image" translatesAutoresizingMaskIntoConstraints="NO" id="626-1X-cQg">
+                                                        <imageView userInteractionEnabled="NO" alpha="0.94999999999999996" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="background" translatesAutoresizingMaskIntoConstraints="NO" id="626-1X-cQg">
                                                             <rect key="frame" x="0.0" y="49" width="335" height="116"/>
                                                             <color key="backgroundColor" red="0.30728578567504883" green="0.91297376155853271" blue="0.8121599555015564" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         </imageView>
@@ -1512,6 +1524,7 @@
                                     <outlet property="openSportsTypeField" destination="IXm-Dt-NwI" id="0G3-TM-veG"/>
                                     <outlet property="postDateField" destination="Zrz-mR-irg" id="Qbr-oD-QKd"/>
                                     <outlet property="postTimeField" destination="QdD-eq-Lg0" id="0se-vn-V50"/>
+                                    <outlet property="sportsImageView" destination="626-1X-cQg" id="TfY-px-GWr"/>
                                     <outlet property="statusField" destination="zUA-iQ-8z5" id="etx-Dz-NgR"/>
                                     <outlet property="usernameField" destination="Q07-6Z-iZ2" id="uGi-gw-aDI"/>
                                 </connections>
@@ -1531,8 +1544,8 @@
         <image name="AppLogo" width="500" height="146"/>
         <image name="Image" width="193" height="163"/>
         <image name="arrow" width="16" height="25"/>
+        <image name="background" width="375" height="937"/>
         <image name="burger" width="38" height="29"/>
-        <image name="image" width="16" height="16"/>
         <image name="photo" width="98" height="98"/>
         <image name="stars" width="97" height="17"/>
         <image name="tab_Social" width="50" height="50"/>
