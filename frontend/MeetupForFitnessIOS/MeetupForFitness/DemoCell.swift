@@ -39,6 +39,7 @@ class DemoCell: FoldingCell {
     
     @IBOutlet weak var statusField: UILabel!
     
+    @IBOutlet weak var sportsImageView: UIImageView!
     
     var aid: Int = 0 {
         didSet {
@@ -118,6 +119,11 @@ class DemoCell: FoldingCell {
         }
     }
     
+    var sportImage = "background" {
+        didSet {
+            sportsImageView.image = UIImage(named: "\(sportImage)_background")
+        }
+    }
 
     override func awakeFromNib() {
 

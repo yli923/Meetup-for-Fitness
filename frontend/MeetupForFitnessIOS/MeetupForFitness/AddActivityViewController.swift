@@ -57,7 +57,7 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
             teamId = -1
         case 1:
             teamSelections.isHidden = false
-            
+            teamId = 0
         default:
             break
         }
@@ -92,6 +92,7 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if pickerView == teamSelections {
             selectedTeam = teamPickerData[row]
+            teamId = row
         } else if pickerView == sportSelections {
             selectedSport = sportPickerData[row]
         }

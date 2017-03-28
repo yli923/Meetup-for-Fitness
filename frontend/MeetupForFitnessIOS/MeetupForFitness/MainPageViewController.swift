@@ -146,11 +146,23 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
         let locationLabel = cell.contentView.viewWithTag(5) as! UILabel
         let attendanceLabel = cell.contentView.viewWithTag(6) as! UILabel
         let attendButton = cell.contentView.viewWithTag(7) as! AttendButton
+        let postTimeLabel = cell.contentView.viewWithTag(8) as! UILabel
         
         activityNameLabel.text = currentActivity.name
         sportTypeLabel.text = currentActivity.sportsType
         ownerLabel.text = "By: \(currentActivity.getOwnerName())"
-        activityTimeLabel.text = currentActivity.activityTime
+        
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEE, dd LLL yyyy HH:mm:ss z"
+        
+        let activityTime = dateFormatter.date(from: currentActivity.activityTime)
+        let postTime = dateFormatter.date(from: currentActivity.postTime)
+        
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .short
+        activityTimeLabel.text = dateFormatter.string(from: activityTime!)
+        postTimeLabel.text = "Post at: \(dateFormatter.string(from: postTime!))"
+        
         locationLabel.text = currentActivity.location
         attendanceLabel.text = "\(currentActivity.getAttendedAmount())/\(currentActivity.maxAttendance!)"
         

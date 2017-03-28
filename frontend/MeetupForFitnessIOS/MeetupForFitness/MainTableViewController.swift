@@ -27,7 +27,7 @@ import Alamofire
 class MainTableViewController: UITableViewController {
     
     let kCloseCellHeight: CGFloat = 179
-    let kOpenCellHeight: CGFloat = 405
+    let kOpenCellHeight: CGFloat = 415
 
     let kRowsCount = 10
     
@@ -41,7 +41,7 @@ class MainTableViewController: UITableViewController {
         super.viewDidLoad()
         
         createCellHeightsArray()
-        self.tableView.backgroundColor = UIColor(patternImage: UIImage(named: "background")!)
+        self.tableView.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
         
         userId = UserDefaults.standard.integer(forKey: "currentUserId")
     }
@@ -203,6 +203,8 @@ class MainTableViewController: UITableViewController {
         cell.postTime = dateFormatter.string(from: postTime!)
         cell.activityTime = dateFormatter.string(from: activityTime!)
         
+        
+        cell.sportImage = currentActivity.sportsType
         
     }
 
