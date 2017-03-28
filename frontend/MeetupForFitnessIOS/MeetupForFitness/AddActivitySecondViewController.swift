@@ -94,7 +94,7 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
         
         let parameters: Parameters = [
             "aName": activityName,
-            "aInfo": "   ",
+            "aInfo": "It's a fun game!",
             "location": acitivtyLocationField.text!,
             "aTime": dateString,
             "sportsType": sportType,
