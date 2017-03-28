@@ -83,9 +83,16 @@ def get_all_activity():
 			sportsId = aRow[7]
 			maxPeople = aRow[8]
 			teamId = aRow[9]
+			attended=aRow[10]
 			sportsCur = db.cursor()
 			sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
 			sportsType = [item[0] for item in sportsCur.fetchall()]
+			sportsCur.execute("SELECT userId FROM AttendActivity WHERE aid = '%s'"%aid)
+			attendList = []
+			if sportsCur.rowcount > 0:
+				attendR = sportsCur.fetchall()
+				for a in attendR:
+					attendList.append(a[0])
 			if teamId == -1:
 				currentActivity = {}
 				currentActivity['userId'] = userId
@@ -97,6 +104,7 @@ def get_all_activity():
 				currentActivity['postTime'] = postTime
 				currentActivity['sportsType'] = sportsType
 				currentActivity['maxPeople'] = maxPeople
+				currentActivity['attended'] = attendList
 				activityList.append(currentActivity)
 			else:
 				teamCur = db.cursor()
@@ -112,11 +120,105 @@ def get_all_activity():
 				currentActivity['postTime'] = postTime
 				currentActivity['sportsType'] = sportsType
 				currentActivity['maxPeople'] = maxPeople
+				currentActivity['attended'] = attendList
 				currentActivity['teamId'] = teamId
 				currentActivity['teamName'] = tName
 				activityList.append(currentActivity)
-	db.close()
-	return jsonify({'activities':activityList})
+		db.close()
+		return jsonify({'activities':activityList})
+	else:
+		db.close()
+		abort(404, '{"message":"no activity"}')
+
+@app.route('/activity/<userId>', methods=['GET'])
+def get_user_activity(userId):	
+	activityList = []
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT * FROM Activity WHERE userId = '%s'"%userId)
+	if cursor.rowcount > 0:
+		aList = cursor.fetchall()
+		for aRow in aList:
+			aid = aRow[0]
+			aName = aRow[1]
+			aInfo = aRow[2]
+			location = aRow[3]
+			aTime = aRow[4]
+			postTime = aRow[5]
+			sportsId = aRow[6]
+			maxPeople = aRow[7]
+			teamId = aRow[8]
+			attended = aRow[9]
+			sportsCur = db.cursor()
+			sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
+			sportsType = [item[0] for item in sportsCur.fetchall()]
+			sportsCur.execute("SELECT userId FROM AttendActivity WHERE aid = '%s'"%aid)
+			attendList = []
+			if sportsCur.rowcount > 0:
+				attendR = sportsCur.fetchall()
+				for a in attendR:
+					attendList.append(a[0])
+			if teamId == -1:
+				currentActivity = {}
+				currentActivity['userId'] = userId
+				currentActivity['aid'] = aid
+				currentActivity['aName'] = aName
+				currentActivity['aInfo'] = aInfo
+				currentActivity['location'] = location
+				currentActivity['aTime'] = aTime
+				currentActivity['postTime'] = postTime
+				currentActivity['sportsType'] = sportsType
+				currentActivity['maxPeople'] = maxPeople
+				currentActivity['attended'] = attendList
+				activityList.append(currentActivity)
+			else:
+				teamCur = db.cursor()
+				teamCur.execute("SELECT tName FROM TeamInfo WHERE teamId = '%s'" %teamId)
+				tName = [item[0] for item in teamCur.fetchall()]
+				currentActivity = {}
+				currentActivity['userId'] = userId
+				currentActivity['aid'] = aid
+				currentActivity['aName'] = aName
+				currentActivity['aInfo'] = aInfo
+				currentActivity['location'] = location
+				currentActivity['aTime'] = aTime
+				currentActivity['postTime'] = postTime
+				currentActivity['sportsType'] = sportsType
+				currentActivity['maxPeople'] = maxPeople
+				currentActivity['attended'] = attendList
+				currentActivity['teamId'] = teamId
+				currentActivity['teamName'] = tName
+				activityList.append(currentActivity)
+		db.close()
+		return jsonify({'activities':activityList})
+	else:
+		db.close()
+		abort(404, '{"message":"no activity"}')
+
+@app.route('/activity/attend',methods=['POST'])
+def attend_activity():
+	if not request.json or not 'userId' in request.json or not "aid" in request.json:
+		abort(400, '{"message":"Input parameter incorrect or missing"}')
+	userId = request.json['userId']
+	aid = request.json['aid']
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT maxPeople,attended FROM Activity WHERE aid = '%s'"%aid)
+	aRow = cursor.fetchall()[0]
+	maxPeople = int(aRow[0])
+	attended = int(aRow[1])
+	attended = attended + 1
+	if attended <= maxPeople:
+		cursor.execute("UPDATE Activity SET attended = '%s' WHERE aid = %s",[attended,aid])
+		cursor.execute("INSERT INTO AttendActivity(aid,userId) values(%s,%s)",[aid,userId])
+		db.commit()
+		db.close()
+		return'success'
+	else:
+		db.rollback()
+		db.close()
+		return 'fail'
+
 
 @app.route('/activity/add/allInfo/<userId>', methods=['POST'])
 def add_activity(userId):
@@ -136,8 +238,9 @@ def add_activity(userId):
 	cursor.execute("SELECT sportsId FROM SportsType WHERE sportsType = '%s'"%sportsType)
 	sportsId = [item[0] for item in cursor.fetchall()]
 	try:
-		cursor.execute("INSERT INTO Activity(userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)",[userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId])
+		cursor.execute("INSERT INTO Activity(userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,attended) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",[userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,1])
 		aid = cursor.lastrowid
+		cursor.execute("INSERT INTO AttendActivity(userId, aid) values (%s,%s)",[userId,aid])
 		for friend in friendList:
 			friendCur = db.cursor()
 			friendCur.execute("INSERT INTO FriendInvite(aid,friendId) values (%s,%s)",[aid,friend])
@@ -162,42 +265,6 @@ def get_sportsType():
 	else :
 		db.close()
 		abort(400,"fail")
-
-@app.route('/activity/<userId>', methods=['GET'])
-def get_user_activity(userId):	
-	activityList = []
-	db = mysql.connect()
-	cursor = db.cursor()
-	cursor.execute("SELECT * FROM Activity WHERE userId = '%s'"%userId)
-	if cursor.rowcount > 0:
-		aList = cursor.fetchall()
-		for aRow in aList:
-			aid = aRow[0]
-			aName = aRow[1]
-			aInfo = aRow[2]
-			location = aRow[3]
-			aTime = aRow[4]
-			postTime = aRow[5]
-			sportsId = aRow[6]
-			maxPeople = aRow[7]
-			isTeam = aRow[8]
-			sportsCur = db.cursor()
-			sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
-			sportsType = [item[0] for item in sportsCur.fetchall()]
-			currentActivity = {}
-			currentActivity['userId'] = userId
-			currentActivity['aid'] = aid
-			currentActivity['aName'] = aName
-			currentActivity['aInfo'] = aInfo
-			currentActivity['location'] = location
-			currentActivity['aTime'] = aTime
-			currentActivity['postTime'] = postTime
-			currentActivity['sportsType'] = sportsType
-			currentActivity['maxPeople'] = maxPeople
-			currentActivity['teamId'] = teamId
-			activityList.append(currentActivity)
-	db.close()
-	return jsonify({'activities':activityList})
 
 @app.route('/friends/<userId>', methods=['GET'])
 def get_user_friends(userId):
