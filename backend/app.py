@@ -181,7 +181,7 @@ def get_user_activity(userId):
 					teamCur.execute("SELECT tName FROM TeamInfo WHERE teamId = '%s'" %teamId)
 					tName = [item[0] for item in teamCur.fetchall()]
 					currentActivity = {}
-					currentActivity['userId'] = userId
+					currentActivity['userId'] = uid
 					currentActivity['aid'] = aid
 					currentActivity['aName'] = aName
 					currentActivity['aInfo'] = aInfo
