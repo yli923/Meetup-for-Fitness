@@ -128,7 +128,7 @@ def get_all_activity():
 		return jsonify({'activities':activityList})
 	else:
 		db.close()
-		return 'fail'
+		abort(404, '{"message":"no activity"}')
 
 @app.route('/activity/<userId>', methods=['GET'])
 def get_user_activity(userId):	
@@ -193,7 +193,7 @@ def get_user_activity(userId):
 		return jsonify({'activities':activityList})
 	else:
 		db.close()
-		return 'fail'
+		abort(404, '{"message":"no activity"}')
 
 @app.route('/activity/attend',methods=['POST'])
 def attend_activity():
