@@ -18,6 +18,9 @@
 		086B364A1E6E4E5400D8DDDB /* FoldingCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086B36471E6E4E5400D8DDDB /* FoldingCell.swift */; };
 		086B364B1E6E4E5400D8DDDB /* MainTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086B36481E6E4E5400D8DDDB /* MainTableViewController.swift */; };
 		086B364C1E6E4E5400D8DDDB /* DemoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 086B36491E6E4E5400D8DDDB /* DemoCell.swift */; };
+		087B9B7B1E89F8FC0061CABA /* Activity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 087B9B7A1E89F8FC0061CABA /* Activity.swift */; };
+		087B9B7D1E89FE460061CABA /* MainPageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 087B9B7C1E89FE460061CABA /* MainPageViewController.swift */; };
+		087B9B7F1E8A210A0061CABA /* AttendButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 087B9B7E1E8A210A0061CABA /* AttendButton.swift */; };
 		08A87F1D1E88DDA700685488 /* AddActivityViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A87F1C1E88DDA700685488 /* AddActivityViewController.swift */; };
 		08A87F1F1E88DDC900685488 /* AddActivitySecondViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08A87F1E1E88DDC900685488 /* AddActivitySecondViewController.swift */; };
 		08AA01051E88C2F400CECC9B /* SignupViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08AA01041E88C2F400CECC9B /* SignupViewController.swift */; };
@@ -59,6 +62,9 @@
 		086B36471E6E4E5400D8DDDB /* FoldingCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoldingCell.swift; sourceTree = "<group>"; };
 		086B36481E6E4E5400D8DDDB /* MainTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainTableViewController.swift; sourceTree = "<group>"; };
 		086B36491E6E4E5400D8DDDB /* DemoCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DemoCell.swift; sourceTree = "<group>"; };
+		087B9B7A1E89F8FC0061CABA /* Activity.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Activity.swift; sourceTree = "<group>"; };
+		087B9B7C1E89FE460061CABA /* MainPageViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainPageViewController.swift; sourceTree = "<group>"; };
+		087B9B7E1E8A210A0061CABA /* AttendButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttendButton.swift; sourceTree = "<group>"; };
 		08A87F1C1E88DDA700685488 /* AddActivityViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddActivityViewController.swift; sourceTree = "<group>"; };
 		08A87F1E1E88DDC900685488 /* AddActivitySecondViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AddActivitySecondViewController.swift; sourceTree = "<group>"; };
 		08AA01041E88C2F400CECC9B /* SignupViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SignupViewController.swift; sourceTree = "<group>"; };
@@ -122,6 +128,8 @@
 				086B36161E6BEDBA00D8DDDB /* AppDelegate.swift */,
 				086B36181E6BEDBA00D8DDDB /* ViewController.swift */,
 				086B361A1E6BEDBA00D8DDDB /* Main.storyboard */,
+				087B9B7C1E89FE460061CABA /* MainPageViewController.swift */,
+				087B9B7A1E89F8FC0061CABA /* Activity.swift */,
 				086B361D1E6BEDBA00D8DDDB /* Assets.xcassets */,
 				086B36471E6E4E5400D8DDDB /* FoldingCell.swift */,
 				086B36481E6E4E5400D8DDDB /* MainTableViewController.swift */,
@@ -131,6 +139,7 @@
 				08AA01041E88C2F400CECC9B /* SignupViewController.swift */,
 				08A87F1C1E88DDA700685488 /* AddActivityViewController.swift */,
 				08A87F1E1E88DDC900685488 /* AddActivitySecondViewController.swift */,
+				087B9B7E1E8A210A0061CABA /* AttendButton.swift */,
 			);
 			path = MeetupForFitness;
 			sourceTree = "<group>";
@@ -359,12 +368,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				087B9B7D1E89FE460061CABA /* MainPageViewController.swift in Sources */,
 				08AA01051E88C2F400CECC9B /* SignupViewController.swift in Sources */,
 				08A87F1F1E88DDC900685488 /* AddActivitySecondViewController.swift in Sources */,
 				086B364B1E6E4E5400D8DDDB /* MainTableViewController.swift in Sources */,
 				086B36191E6BEDBA00D8DDDB /* ViewController.swift in Sources */,
 				086B36171E6BEDBA00D8DDDB /* AppDelegate.swift in Sources */,
+				087B9B7F1E8A210A0061CABA /* AttendButton.swift in Sources */,
 				08A87F1D1E88DDA700685488 /* AddActivityViewController.swift in Sources */,
+				087B9B7B1E89F8FC0061CABA /* Activity.swift in Sources */,
 				086B364A1E6E4E5400D8DDDB /* FoldingCell.swift in Sources */,
 				086B364C1E6E4E5400D8DDDB /* DemoCell.swift in Sources */,
 			);

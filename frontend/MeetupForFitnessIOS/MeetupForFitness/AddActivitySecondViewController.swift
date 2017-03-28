@@ -68,8 +68,8 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
                 print("Matches found")
                 
                 for item in response!.mapItems {
-                    print("Name = \(item.name!)")
-                    print("Phone = \(item.phoneNumber!)")
+                    print("Name = \(item.name)")
+                    print("Phone = \(item.phoneNumber)")
                     
                     self.matchingItems.append(item as MKMapItem)
                     print("Matching items = \(self.matchingItems.count)")
@@ -90,7 +90,7 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
     @IBAction func addNewActivity(_ sender: Any) {
         
         let ud = UserDefaults.standard
-        let userId = ud.integer(forKey: "userId")
+        let userId = ud.integer(forKey: "currentUserId")
         
         let parameters: Parameters = [
             "aName": activityName,

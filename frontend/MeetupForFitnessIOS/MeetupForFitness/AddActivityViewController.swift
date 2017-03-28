@@ -98,7 +98,21 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
     }
     
     @IBAction func nextStep(_ sender: Any) {
+        if selectedTeam == "" || selectedSport == "" || dateString == "" || activityNameField.text == "" {
+            self.sendAlart(info: "Please fill in all info before moving on.")
+            return
+        }
         self.performSegue(withIdentifier: "addNextNew", sender: self)
+    }
+    
+    func sendAlart(info: String) {
+        let alertController = UIAlertController(title: "Hey!", message: info, preferredStyle: UIAlertControllerStyle.alert)
+        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) {
+            (result : UIAlertAction) -> Void in
+            print("OK")
+        }
+        alertController.addAction(okAction)
+        self.present(alertController, animated: true, completion: nil)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

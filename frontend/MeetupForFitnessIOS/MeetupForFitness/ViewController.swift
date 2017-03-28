@@ -50,7 +50,7 @@ class ViewController: UIViewController, UITextFieldDelegate {
                         //go to main page
                         print("login success")
                         let ud = UserDefaults.standard
-                        ud.set(result["userId"] as! Int, forKey: "userId")
+                        ud.set(result["userId"] as! Int, forKey: "currentUserId")
                         ud.synchronize()
                         
                         self.performSegue(withIdentifier: "loginToMain", sender: self)

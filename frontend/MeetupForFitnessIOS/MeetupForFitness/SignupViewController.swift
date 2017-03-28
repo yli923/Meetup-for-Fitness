@@ -58,7 +58,7 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
                         //go to main page
                         print("login success")
                         let ud = UserDefaults.standard
-                        ud.set(userId, forKey: "userId")
+                        ud.set(userId, forKey: "currentUserId")
                         ud.synchronize()
                         
                         self.performSegue(withIdentifier: "signupToMain", sender: self)
