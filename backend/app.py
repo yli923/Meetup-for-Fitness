@@ -139,16 +139,17 @@ def get_user_activity(userId):
 	if cursor.rowcount > 0:
 		aList = cursor.fetchall()
 		for aRow in aList:
-			aid = aRow[0]
-			aName = aRow[1]
-			aInfo = aRow[2]
-			location = aRow[3]
-			aTime = aRow[4]
-			postTime = aRow[5]
-			sportsId = aRow[6]
-			maxPeople = aRow[7]
-			teamId = aRow[8]
-			attended = aRow[9]
+			uid = aRow[0]
+			aid = aRow[1]
+			aName = aRow[2]
+			aInfo = aRow[3]
+			location = aRow[4]
+			aTime = aRow[5]
+			postTime = aRow[6]
+			sportsId = aRow[7]
+			maxPeople = aRow[8]
+			teamId = aRow[9]
+			attended = aRow[10]
 			sportsCur = db.cursor()
 			sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
 			sportsType = [item[0] for item in sportsCur.fetchall()]
@@ -160,7 +161,7 @@ def get_user_activity(userId):
 					attendList.append(a[0])
 			if teamId == -1:
 				currentActivity = {}
-				currentActivity['userId'] = userId
+				currentActivity['userId'] = uid
 				currentActivity['aid'] = aid
 				currentActivity['aName'] = aName
 				currentActivity['aInfo'] = aInfo
