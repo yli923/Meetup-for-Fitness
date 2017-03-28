@@ -135,61 +135,65 @@ def get_user_activity(userId):
 	activityList = []
 	db = mysql.connect()
 	cursor = db.cursor()
-	cursor.execute("SELECT * FROM Activity WHERE userId = '%s'"%userId)
+	cursor.execute("SELECT aid FROM AttendActivity WHERE userId = '%s'"%userId)
 	if cursor.rowcount > 0:
-		aList = cursor.fetchall()
-		for aRow in aList:
-			uid = aRow[0]
-			aid = aRow[1]
-			aName = aRow[2]
-			aInfo = aRow[3]
-			location = aRow[4]
-			aTime = aRow[5]
-			postTime = aRow[6]
-			sportsId = aRow[7]
-			maxPeople = aRow[8]
-			teamId = aRow[9]
-			attended = aRow[10]
-			sportsCur = db.cursor()
-			sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
-			sportsType = [item[0] for item in sportsCur.fetchall()]
-			sportsCur.execute("SELECT userId FROM AttendActivity WHERE aid = '%s'"%aid)
-			attendList = []
-			if sportsCur.rowcount > 0:
-				attendR = sportsCur.fetchall()
-				for a in attendR:
-					attendList.append(a[0])
-			if teamId == -1:
-				currentActivity = {}
-				currentActivity['userId'] = uid
-				currentActivity['aid'] = aid
-				currentActivity['aName'] = aName
-				currentActivity['aInfo'] = aInfo
-				currentActivity['location'] = location
-				currentActivity['aTime'] = aTime
-				currentActivity['postTime'] = postTime
-				currentActivity['sportsType'] = sportsType
-				currentActivity['maxPeople'] = maxPeople
-				currentActivity['attended'] = attendList
-				activityList.append(currentActivity)
-			else:
-				teamCur = db.cursor()
-				teamCur.execute("SELECT tName FROM TeamInfo WHERE teamId = '%s'" %teamId)
-				tName = [item[0] for item in teamCur.fetchall()]
-				currentActivity = {}
-				currentActivity['userId'] = userId
-				currentActivity['aid'] = aid
-				currentActivity['aName'] = aName
-				currentActivity['aInfo'] = aInfo
-				currentActivity['location'] = location
-				currentActivity['aTime'] = aTime
-				currentActivity['postTime'] = postTime
-				currentActivity['sportsType'] = sportsType
-				currentActivity['maxPeople'] = maxPeople
-				currentActivity['attended'] = attendList
-				currentActivity['teamId'] = teamId
-				currentActivity['teamName'] = tName
-				activityList.append(currentActivity)
+		aidList = cursor.fetchall()
+		for a in aidList:
+			aCur = db.cursor()
+			aCur.execute("SELECT * FROM Activity WHERE aid = '%s'"%a)
+			aList = aCur.fetchall()
+			for aRow in aList:
+				uid = aRow[0]
+				aid = aRow[1]
+				aName = aRow[2]
+				aInfo = aRow[3]
+				location = aRow[4]
+				aTime = aRow[5]
+				postTime = aRow[6]
+				sportsId = aRow[7]
+				maxPeople = aRow[8]
+				teamId = aRow[9]
+				attended = aRow[10]
+				sportsCur = db.cursor()
+				sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
+				sportsType = [item[0] for item in sportsCur.fetchall()]
+				sportsCur.execute("SELECT userId FROM AttendActivity WHERE aid = '%s'"%aid)
+				attendList = []
+				if sportsCur.rowcount > 0:
+					attendR = sportsCur.fetchall()
+					for a in attendR:
+						attendList.append(a[0])
+				if teamId == -1:
+					currentActivity = {}
+					currentActivity['userId'] = uid
+					currentActivity['aid'] = aid
+					currentActivity['aName'] = aName
+					currentActivity['aInfo'] = aInfo
+					currentActivity['location'] = location
+					currentActivity['aTime'] = aTime
+					currentActivity['postTime'] = postTime
+					currentActivity['sportsType'] = sportsType
+					currentActivity['maxPeople'] = maxPeople
+					currentActivity['attended'] = attendList
+					activityList.append(currentActivity)
+				else:
+					teamCur = db.cursor()
+					teamCur.execute("SELECT tName FROM TeamInfo WHERE teamId = '%s'" %teamId)
+					tName = [item[0] for item in teamCur.fetchall()]
+					currentActivity = {}
+					currentActivity['userId'] = userId
+					currentActivity['aid'] = aid
+					currentActivity['aName'] = aName
+					currentActivity['aInfo'] = aInfo
+					currentActivity['location'] = location
+					currentActivity['aTime'] = aTime
+					currentActivity['postTime'] = postTime
+					currentActivity['sportsType'] = sportsType
+					currentActivity['maxPeople'] = maxPeople
+					currentActivity['attended'] = attendList
+					currentActivity['teamId'] = teamId
+					currentActivity['teamName'] = tName
+					activityList.append(currentActivity)
 		db.close()
 		return jsonify({'activities':activityList})
 	else:
