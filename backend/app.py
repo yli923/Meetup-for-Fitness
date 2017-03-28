@@ -120,7 +120,7 @@ def get_all_activity():
 
 @app.route('/activity/add/allInfo/<userId>', methods=['POST'])
 def add_activity(userId):
-	if not request.json or not 'aName' in request.json or not 'aInfo' in request.json or not 'location' in request.json or not 'aTime' in request.json or not 'sportsType' in request.json or not 'maxPeople' in request.json or not 'teamId' in request.json: 
+	if not request.json or not 'aName' in request.json or not 'aInfo' in request.json or not 'location' in request.json or not 'aTime' in request.json or not 'sportsType' in request.json or not 'maxPeople' in request.json or not 'teamId' in request.json or not 'friendList' in request.json: 
 		abort(400, '{"message":"Input parameter incorrect or missing"}')
 	aName = request.json['aName']
 	aInfo = request.json['aInfo']
@@ -129,6 +129,7 @@ def add_activity(userId):
 	sportsType = request.json['sportsType']
 	maxPeople = request.json['maxPeople']
 	teamId = request.json['teamId']
+	friendList = request.json['friendList']
 	postTime = datetime.datetime.now()
 	db = mysql.connect()
 	cursor = db.cursor()
@@ -137,13 +138,16 @@ def add_activity(userId):
 	try:
 		cursor.execute("INSERT INTO Activity(userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId) values (%s,%s,%s,%s,%s,%s,%s,%s,%s)",[userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId])
 		aid = cursor.lastrowid
+		for friend in friendList:
+			friendCur = db.cursor()
+			friendCur.execute("INSERT INTO FriendInvite(aid,friendId) values (%s,%s)",[aid,friend])
 		db.commit()
 		db.close()
 		return("success")
 	except:
 		db.rollback()
 		db.close()
-		return("fail")
+		abort(400,"fail")
 
 @app.route('/activity/sportsType', methods=['GET'])
 def get_sportsType():
