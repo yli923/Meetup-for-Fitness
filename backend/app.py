@@ -4,6 +4,7 @@ import json, codecs
 import boto3
 from werkzeug.utils import secure_filename
 import datetime
+import numpy as np
 
 config = json.load(codecs.open('config.json', encoding='utf-8'))
 app = Flask(__name__)
@@ -274,16 +275,44 @@ def get_sportsType():
 @app.route('/friends/<userId>', methods=['GET'])
 def get_user_friends(userId):
 	friendList = []
+	result =[]
 	db = mysql.connect()
 	cursor = db.cursor()
 	cursor.execute("SELECT friendId FROM Friends WHERE userId = '%s'"%userId) 
 	if cursor.rowcount > 0:
 		friendList = [item[0] for item in cursor.fetchall()]
+		friendList = map(int, friendList)
+		friendArray = np.asarray(friendList)
+		for f in friendArray:
+ 			friendCur = db.cursor()
+ 			friendCur.execute("SELECT userId,username FROM User WHERE userId ='%s'"%f)
+			temp = friendCur.fetchall()[0]
+			temp1 = {}
+			temp1["userId"] = temp[0]
+			temp1["username"] = temp[1]
+			result.append(temp1)
 		db.close()
-		return jsonify({'Friends List':friendList})
+		return jsonify({'Friends List':result})
 	else :
 		db.close()
 		abort(400,"fail")
+
+@app.route('/friends/search',methods=['GET'])
+def search_friends():
+	nameList = []
+	result = []
+	if not request.json or not 'uName' in request.json:
+		abort(400, '{"message":"Input parameter incorrect or missing"}')
+	uName = request.json['uName']
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT username FROM User")
+	nameList = [item[0] for item in cursor.fetchall()]
+	for n in nameList:
+		if uName.lower() in n.lower():
+			result.append(n)
+	db.close()
+	return jsonify({'userNameList':result})
 
 @app.route('/friends/add/<userId>', methods=['POST'])
 def add_friends(userId):
@@ -304,36 +333,62 @@ def add_friends(userId):
 		db.close()
 		return("fail")
 
-
 @app.route('/teams/<userId>', methods=['GET'])
 def get_user_teams(userId):
-	teamsList = []
+	teamList = []
+	result =[]
 	db = mysql.connect()
 	cursor = db.cursor()
 	cursor.execute("SELECT teamId FROM TeamPlayer WHERE userId = '%s'"%userId) 
 	if cursor.rowcount > 0:
 		teamList = [item[0] for item in cursor.fetchall()]
+		teamList = map(int, teamList)
+		teamArray = np.asarray(teamList)
+		for t in teamArray:
+ 			teamCur = db.cursor()
+ 			teamCur.execute("SELECT teamId,tName FROM TeamInfo WHERE teamId ='%s'"%t)
+			temp = teamCur.fetchall()[0]
+			temp1 = {}
+			temp1["teamId"] = temp[0]
+			temp1["tname"] = temp[1]
+			result.append(temp1)
 		db.close()
-		return jsonify({'Users Team List':teamList})
+		return jsonify({'Team List':result})
 	else :
 		db.close()
 		abort(400,"fail")
 
+@app.route('/teams/search',methods=['GET'])
+def search_team():
+	nameList = []
+	result = []
+	if not request.json or not 'tName' in request.json:
+		abort(400, '{"message":"Input parameter incorrect or missing"}')
+	tName = request.json['tName']
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT tname FROM TeamInfo")
+	nameList = [item[0] for item in cursor.fetchall()]
+	for n in nameList:
+		if tName.lower() in n.lower():
+			result.append(n)
+	db.close()
+	return jsonify({'teamNameList':result})
+
 @app.route('/teams/add/allInfo/<userId>', methods=['POST'])
 def add_team(userId):
-	if not request.json or not 'tName' in request.json or not 'tInfo' in request.json or not 'sportsType' in request.json or not 'tAvatarURL' in request.json: 
+	if not request.json or not 'tName' in request.json or not 'tInfo' in request.json or not 'sportsType' in request.json: 
 		abort(400, '{"message":"Input parameter incorrect or missing"}')
 	tName = request.json['tName']
 	tInfo = request.json['tInfo']
 	sportsType = request.json['sportsType']
-	tAvatarURL = request.json['tAvatarURL']
 	postTime = datetime.datetime.now()
 	db = mysql.connect()
 	cursor = db.cursor()
 	cursor.execute("SELECT sportsId FROM SportsType WHERE sportsType = '%s'"%sportsType)
 	sportsId = [item[0] for item in cursor.fetchall()]
 	try:
-		cursor.execute("INSERT INTO TeamInfo(userId,tName,tInfo,postTime,sportsId,tAvatarURL) values (%s,%s,%s,%s,%s,%s)",[userId,tName,tInfo,postTime,sportsId,tAvatarURL])
+		cursor.execute("INSERT INTO TeamInfo(userId,tName,tInfo,postTime,sportsId) values (%s,%s,%s,%s,%s)",[userId,tName,tInfo,postTime,sportsId])
 		teamId = cursor.lastrowid
 		db.commit()
 		db.close()
