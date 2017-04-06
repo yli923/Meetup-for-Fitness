@@ -295,7 +295,7 @@ def get_user_friends(userId):
 		db.close()
 		abort(400,"fail")
 
-@app.route('/friends/search',methods=['GET'])
+@app.route('/friends/search',methods=['POST'])
 def search_friends():
 	nameList = []
 	result = []
@@ -355,7 +355,7 @@ def get_user_teams(userId):
 		db.close()
 		abort(400,"fail")
 
-@app.route('/teams/search',methods=['GET'])
+@app.route('/teams/search',methods=['POST'])
 def search_team():
 	nameList = []
 	result = []
