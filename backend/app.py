@@ -308,7 +308,13 @@ def search_friends():
 	nameList = [item[0] for item in cursor.fetchall()]
 	for n in nameList:
 		if uName.lower() in n.lower():
-			result.append(n)
+			friendCur = db.cursor()
+			friendCur.execute("SELECT userId,username FROM User WHERE username ='%s'"%n)
+			temp = friendCur.fetchall()[0]
+			temp1 = {}
+			temp1["userId"] = temp[0]
+			temp1["username"] = temp[1]
+			result.append(temp1)
 	db.close()
 	return jsonify({'userNameList':result})
 
@@ -364,13 +370,19 @@ def search_team():
 	tName = request.json['tName']
 	db = mysql.connect()
 	cursor = db.cursor()
-	cursor.execute("SELECT tname FROM TeamInfo")
+	cursor.execute("SELECT tName FROM TeamInfo")
 	nameList = [item[0] for item in cursor.fetchall()]
 	for n in nameList:
 		if tName.lower() in n.lower():
-			result.append(n)
+			friendCur = db.cursor()
+			friendCur.execute("SELECT teamId,tName FROM TeamInfo WHERE tName ='%s'"%n)
+			temp = friendCur.fetchall()[0]
+			temp1 = {}
+			temp1["teamId"] = temp[0]
+			temp1["tName"] = temp[1]
+			result.append(temp1)
 	db.close()
-	return jsonify({'teamNameList':result})
+	return jsonify({'userNameList':result})
 
 @app.route('/teams/add/allInfo/<userId>', methods=['POST'])
 def add_team(userId):
