@@ -4,7 +4,6 @@ import json, codecs
 import boto3
 from werkzeug.utils import secure_filename
 import datetime
-import numpy as np
 
 config = json.load(codecs.open('config.json', encoding='utf-8'))
 app = Flask(__name__)
@@ -282,8 +281,7 @@ def get_user_friends(userId):
 	if cursor.rowcount > 0:
 		friendList = [item[0] for item in cursor.fetchall()]
 		friendList = map(int, friendList)
-		friendArray = np.asarray(friendList)
-		for f in friendArray:
+		for f in friendList:
  			friendCur = db.cursor()
  			friendCur.execute("SELECT userId,username FROM User WHERE userId ='%s'"%f)
 			temp = friendCur.fetchall()[0]
@@ -343,8 +341,7 @@ def get_user_teams(userId):
 	if cursor.rowcount > 0:
 		teamList = [item[0] for item in cursor.fetchall()]
 		teamList = map(int, teamList)
-		teamArray = np.asarray(teamList)
-		for t in teamArray:
+		for t in teamList:
  			teamCur = db.cursor()
  			teamCur.execute("SELECT teamId,tName FROM TeamInfo WHERE teamId ='%s'"%t)
 			temp = teamCur.fetchall()[0]
