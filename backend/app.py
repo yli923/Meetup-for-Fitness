@@ -414,6 +414,7 @@ def add_team(userId):
 	try:
 		cursor.execute("INSERT INTO TeamInfo(userId,tName,tInfo,postTime,sportsId) values (%s,%s,%s,%s,%s)",[userId,tName,tInfo,postTime,sportsId])
 		teamId = cursor.lastrowid
+		cursor.execute("INSERT INTO TeamPlayer(userId,teamId) values (%s,%s)",[userId, teamId])
 		db.commit()
 		db.close()
 		return("success")
