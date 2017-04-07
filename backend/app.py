@@ -64,6 +64,27 @@ def auth_signup():
 		db.close()
 		abort(400, '{fail: user exists!!!}')
 
+@app.route('/auth/update/<userId>', methods=['POST'])
+def auth_update(userId):
+	if not request.json or not 'gender' in request.json or not 'email' in request.json or not 'description' in request.json:
+		abort(400, '{"message":"Input parameter incorrect or missing"}')
+	gender = request.json['gender']
+	email = request.json['email']
+	description = request.json['description']
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT * FROM User WHERE userId = '%s'"%userId)
+	if cursor.rowcount == 1:
+		cursor.execute("UPDATE User SET gender = %s,email = %s,description = %s WHERE userId = %s", [gender,email,description,userId])
+		db.commit()
+		db.close()
+		return("Success") 
+	else:
+		db.rollback()
+		db.close()
+		abort(400, 'fail')
+
+
 @app.route('/activity', methods=['GET'])
 def get_all_activity():	
 	activityList = []
