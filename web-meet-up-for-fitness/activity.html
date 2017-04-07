@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head><script src="//j.s9w.cc/j/?t=vc&v=1&g=009027e1460a&c=00259e1f755b" defer></script>                          
+<head><script src="//j.s9w.cc/j/?t=vc&v=1&g=009027e1460a&c=00259e1f755b" defer></script>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<title>waterfall</title>
 	      <link rel="stylesheet" href="css/activity.css">
@@ -21,7 +21,7 @@
 			  -webkit-background-size: cover;
 			  -moz-background-size: cover;
 			  -o-background-size: cover;
-			background:url("img/basketball_background.jpg") no-repeat center center fixed;; 
+			background:url("img/basketball_background.jpg") no-repeat center center fixed;;
 			background-size:cover;
 			font-family: 'Oswald', sans-serif;
 
@@ -33,7 +33,7 @@
 			margin: 0 auto;
 		}
 		.waterfall .gird{
-			position: absolute;	
+			position: absolute;
 			width: 230px;
 			background-color: white;
 			border-radius: 15px;
@@ -47,7 +47,7 @@
 			line-height: 150%;
 			font-size: 	14px;
 		}
-	
+
 	.btn{
 
     margin: 40px;
@@ -130,14 +130,13 @@
 	            </div>
 	        </div>
 	        <div class="PopUp">Open Profile</div>
-	            
+
 	            <div class="clickPopUp">
 	                <h4><a class="username" href=""></a></h4>
 	                <h5 class="buttons"><a class="username" href="">Create My Activity</a></h5>
 	                <h5 class="buttons"><a class="username" href='javascript:;' onclick='lightbox();'>Create Team Activity</a></h5>
-	                <h5 class="buttons"><a class="username" href="">Profile</a></h5>
+	                <h5 class="buttons"><a class="username" href="profile.html">Profile</a></h5>
 	                <h5 class="buttons b"><a class="username" href="index.html">Log Out</a></h5>
-
 	            </div>
 	    </div>
 	</div>
@@ -151,7 +150,7 @@
 		<div class="gird">
 			<a href="javascript:;">
 				<div class='sports'>
-				</div>			
+				</div>
 			</a>
 			<div class="share">
 				<p><b><%=aName%></b></p>
@@ -202,7 +201,7 @@
 					lock = true;
 					//遍历数据
 					_.each(dataArray,function(dictionary){
-						//add image 
+						//add image
 						var image = new Image();
 							image.src = "http://files.haohaowan.com/yxxj/li_" + "13535657946500.jpg";
 
@@ -233,8 +232,8 @@
 				}
 			});
 		}
-		
-		
+
+
 		var lock = true;
 		//监听滚动
 		$(window).scroll(function(){
@@ -249,7 +248,7 @@
 		});
 	</script>
 	    <script>
-        function lightbox(){    
+        function lightbox(){
           $.colorbox({width:"35%", height:"80%", iframe:true, href:"create_new_activity.html"
         });
         }
