@@ -200,6 +200,20 @@ def get_user_activity(userId):
 		db.close()
 		abort(404, '{"message":"no activity"}')
 
+@app.route('/activity/invite/<userId>',methods=['GET'])
+def get_user_invite(userId):
+	inviteList = []
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT aid FROM FriendInvite Where friendId = '%s'"%userId)
+	if cursor.rowcount > 0:
+		inviteList = [item[0] for item in cursor.fetchall()]
+		db.close()
+		return jsonify({'Activities Invited':inviteList})
+	else:
+		db.close()
+		abort(400,"fail")
+
 @app.route('/activity/attend',methods=['POST'])
 def attend_activity():
 	if not request.json or not 'userId' in request.json or not "aid" in request.json:
@@ -294,6 +308,7 @@ def get_user_friends(userId):
 	else :
 		db.close()
 		abort(400,"fail")
+
 
 @app.route('/friends/search',methods=['POST'])
 def search_friends():
@@ -425,6 +440,72 @@ def add_team_member(teamId):
 		db.close()
 		return("fail")
 
+@app.route('/notification/add', methods=['POST'])
+def add_notification():
+	if not request.json or not 'senderId' in request.json or not 'receiverId' in request.json or not 'teamId' in request.json:
+		abort(400, '{"message":"Input parameter incorrect or missing"}')
+	senderId = request.json['senderId']
+	receiverId = request.json['receiverId']
+	teamId = request.json['teamId']
+	postTime = datetime.datetime.now()
+	db = mysql.connect()
+	cursor = db.cursor()
+	try:
+		cursor.execute("INSERT INTO Notification(senderId,receiverId,teamId,postTime) values(%s,%s,%s,%s)",[senderId,receiverId,teamId,postTime])
+		ntfyId = cursor.lastrowid
+		db.commit()
+		db.close()
+		return("success")
+	except:
+		db.rollback()
+		db.close()
+		return("fail")
+
+@app.route('/notification/<receiverId>', methods=['GET'])
+def get_notification(receiverId):
+	notifyList = []
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT ntfyId FROM Notification WHERE receiverId = '%s'"%receiverId)
+	if cursor.rowcount > 0:
+		noList = cursor.fetchall()
+		for n in noList:
+			nCur = db.cursor()
+			nCur.execute("SELECT * FROM Notification WHERE ntfyId = '%s'"%n)
+			nList = nCur.fetchall() 
+			for nRow in nList:
+				ntfyId = nRow[0]
+				senderId = nRow[1]
+				receiverId = nRow[2]
+				teamId = nRow[3]
+				postTime = nRow[4]
+				nameCur = db.cursor()
+				nameCur.execute("SELECT username FROM User WHERE userId = '%s'" %senderId)
+				username = [item[0] for item in nameCur.fetchall()]
+				result = []
+				if teamId == -1:
+					currentN = {}
+					currentN['ntfyId'] = ntfyId
+					currentN['senderId'] = senderId
+					currentN['username'] = username
+					currentN['postTime'] = postTime
+					notifyList.append(currentN)
+				else:
+					nameCur.execute("SELECT tName FROM TeamInfo WHERE teamId = '%s'"%teamId)
+					tName = [item[0] for item in nameCur.fetchall()]
+					currentN = {}
+					currentN['ntfyId'] = ntfyId
+					currentN['senderId'] = senderId
+					currentN['username'] = username
+					currentN['teamId'] = teamId
+					currentN['tName'] = tName
+					currentN['postTime'] = postTime
+					notifyList.append(currentN)
+		db.close()
+		return jsonify({'notifications':notifyList})	
+	else: 
+		db.close()
+		abort(404, '{"message":"no notification"}')
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',port='80')
