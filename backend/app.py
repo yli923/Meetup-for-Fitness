@@ -422,6 +422,21 @@ def get_user_teams(userId):
 		db.close()
 		abort(400,"fail")
 
+@app.route('/teams/member/<teamId>', methods=['GET'])
+def get_team_member(teamId):
+	memberList = []
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT userId FROM TeamPlayer WHERE teamId = '%s'"%teamId)
+	if cursor.rowcount > 0:
+		memberList = [item[0] for item in cursor.fetchall()]
+		db.close()
+		return jsonify({'team member list':memberList})
+	else:
+		db.close()
+		abort(400,"fail")
+
+
 @app.route('/teams/search',methods=['POST'])
 def search_team():
 	nameList = []
