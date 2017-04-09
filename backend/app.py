@@ -506,23 +506,37 @@ def get_notification(receiverId):
 				username = [item[0] for item in nameCur.fetchall()]
 				result = []
 				if teamId == -1:
-					currentN = {}
-					currentN['ntfyId'] = ntfyId
-					currentN['senderId'] = senderId
-					currentN['username'] = username
-					currentN['postTime'] = postTime
-					notifyList.append(currentN)
+					mCur = db.cursor()
+					mCur.execute("SELECT * FROM Friends WHERE userId = %s AND friendId = %s",[senderId,receiverId])
+					if mCur.rowcount > 0:
+						pCur = db.cursor()
+						pCur.execute("DELETE FROM Notification WHERE ntfyId = '%s'"%ntfyId)
+						db.commit()
+					else: 
+						currentN = {}
+						currentN['ntfyId'] = ntfyId
+						currentN['senderId'] = senderId
+						currentN['username'] = username
+						currentN['postTime'] = postTime
+						notifyList.append(currentN)
+
 				else:
-					nameCur.execute("SELECT tName FROM TeamInfo WHERE teamId = '%s'"%teamId)
-					tName = [item[0] for item in nameCur.fetchall()]
-					currentN = {}
-					currentN['ntfyId'] = ntfyId
-					currentN['senderId'] = senderId
-					currentN['username'] = username
-					currentN['teamId'] = teamId
-					currentN['tName'] = tName
-					currentN['postTime'] = postTime
-					notifyList.append(currentN)
+					mCur = db.cursor()
+					mCur.execute("SELECT * FROM TeamPlayer WHERE userId = %s AND teamId = %s",[receiverId,teamId])
+					if mCur.rowcount == 0:
+						mCur.execute("SELECT tName FROM TeamInfo WHERE teamId = '%s'"%teamId)
+						tName = [item[0] for item in mCur.fetchall()]
+						currentN = {}
+						currentN['ntfyId'] = ntfyId
+						currentN['senderId'] = senderId
+						currentN['username'] = username
+						currentN['teamId'] = teamId
+						currentN['tName'] = tName
+						currentN['postTime'] = postTime
+						notifyList.append(currentN)
+					else:
+						mCur.execute("DELETE FROM Notification WHERE ntfyId = %s"%ntfyId)
+						db.commit()
 		db.close()
 		return jsonify({'notifications':notifyList})	
 	else: 
