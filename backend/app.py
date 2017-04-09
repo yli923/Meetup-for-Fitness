@@ -424,18 +424,28 @@ def get_user_teams(userId):
 
 @app.route('/teams/member/<teamId>', methods=['GET'])
 def get_team_member(teamId):
-	memberList = []
+	result = []
 	db = mysql.connect()
 	cursor = db.cursor()
+	cursor.execute("SELECT userId FROM TeamInfo WHERE teamId = '%s'"%teamId)
+	if cursor.rowcount == 1:
+		owner = [item[0] for item in cursor.fetchall()]
 	cursor.execute("SELECT userId FROM TeamPlayer WHERE teamId = '%s'"%teamId)
 	if cursor.rowcount > 0:
 		memberList = [item[0] for item in cursor.fetchall()]
+		for m in memberList:
+			mCur = db.cursor()
+ 			mCur.execute("SELECT userId,username FROM User WHERE userId ='%s'"%m)
+			temp = mCur.fetchall()[0]
+			temp2 = {}
+			temp2["userId"] = temp[0]
+			temp2["username"] = temp[1]
+			result.append(temp2)
 		db.close()
-		return jsonify({'team member list':memberList})
+		return jsonify({'Team Member List':result,'Team Leader':owner})
 	else:
 		db.close()
 		abort(400,"fail")
-
 
 @app.route('/teams/search',methods=['POST'])
 def search_team():
