@@ -473,15 +473,21 @@ def add_notification():
 	db = mysql.connect()
 	cursor = db.cursor()
 	try:
-		cursor.execute("INSERT INTO Notification(senderId,receiverId,teamId,postTime) values(%s,%s,%s,%s)",[senderId,receiverId,teamId,postTime])
-		ntfyId = cursor.lastrowid
-		db.commit()
-		db.close()
-		return("success")
+		cursor.execute("SELECT * FROM Notification WHERE senderId = %s AND receiverId = %s",[senderId,receiverId])
+		if cursor.rowcount == 0:
+			cursor.execute("INSERT INTO Notification(senderId,receiverId,teamId,postTime) values(%s,%s,%s,%s)",[senderId,receiverId,teamId,postTime])
+			ntfyId = cursor.lastrowid
+			db.commit()
+			db.close()
+			return("success")
+		else:
+			db.close()
+			return("success")
 	except:
 		db.rollback()
 		db.close()
 		return("fail")
+
 
 @app.route('/notification/<receiverId>', methods=['GET'])
 def get_notification(receiverId):
