@@ -106,6 +106,8 @@ def get_all_activity():
 			teamId = aRow[9]
 			attended=aRow[10]
 			sportsCur = db.cursor()
+ 			sportsCur.execute("SELECT username FROM User WHERE userId ='%s'"%userId)
+			username = [item[0] for item in sportsCur.fetchall()]
 			sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
 			sportsType = [item[0] for item in sportsCur.fetchall()]
 			sportsCur.execute("SELECT userId FROM AttendActivity WHERE aid = '%s'"%aid)
@@ -116,6 +118,7 @@ def get_all_activity():
 					attendList.append(a[0])
 			if teamId == -1:
 				currentActivity = {}
+				currentActivity['username'] = username
 				currentActivity['userId'] = userId
 				currentActivity['aid'] = aid
 				currentActivity['aName'] = aName
@@ -133,6 +136,7 @@ def get_all_activity():
 				tName = [item[0] for item in teamCur.fetchall()]
 				currentActivity = {}
 				currentActivity['userId'] = userId
+				currentActivity['username'] = username
 				currentActivity['aid'] = aid
 				currentActivity['aName'] = aName
 				currentActivity['aInfo'] = aInfo
@@ -176,6 +180,8 @@ def get_user_activity(userId):
 				teamId = aRow[9]
 				attended = aRow[10]
 				sportsCur = db.cursor()
+				sportsCur.execute("SELECT username FROM User WHERE userId ='%s'"%userId)
+				username = [item[0] for item in sportsCur.fetchall()]
 				sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
 				sportsType = [item[0] for item in sportsCur.fetchall()]
 				sportsCur.execute("SELECT userId FROM AttendActivity WHERE aid = '%s'"%aid)
@@ -186,6 +192,7 @@ def get_user_activity(userId):
 						attendList.append(a[0])
 				if teamId == -1:
 					currentActivity = {}
+					currentActivity['username'] = username
 					currentActivity['userId'] = uid
 					currentActivity['aid'] = aid
 					currentActivity['aName'] = aName
@@ -202,6 +209,7 @@ def get_user_activity(userId):
 					teamCur.execute("SELECT tName FROM TeamInfo WHERE teamId = '%s'" %teamId)
 					tName = [item[0] for item in teamCur.fetchall()]
 					currentActivity = {}
+					currentActivity['username'] = username
 					currentActivity['userId'] = uid
 					currentActivity['aid'] = aid
 					currentActivity['aName'] = aName
@@ -228,7 +236,24 @@ def get_user_invite(userId):
 	cursor = db.cursor()
 	cursor.execute("SELECT aid FROM FriendInvite Where friendId = '%s'"%userId)
 	if cursor.rowcount > 0:
-		inviteList = [item[0] for item in cursor.fetchall()]
+		aList = [item[0] for item in cursor.fetchall()]
+		for a in aList:
+			aCur = db.cursor()
+			aCur.execute("SELECT userId FROM AttendActivity WHERE aid = %s AND userId = %s",[a,userId])
+			if aCur.rowcount == 0:
+				aCur.execute("SELECT maxPeople,attended From Activity WHERE aid = '%s'"%a)
+				aRow = aCur.fetchall()[0]
+				maxPeople = int(aRow[0])
+				attended = int(aRow[1])
+				if attended < maxPeople:
+					inviteList.append(a)
+				else:
+					aCur.execute("DELETE FROM FriendInvite WHERE aid = %s AND friendId = %s",[a,userId])
+					db.commit()
+					
+			else:
+				aCur.execute("DELETE FROM FriendInvite WHERE aid = %s AND friendId = %s",[a,userId])
+				db.commit()
 		db.close()
 		return jsonify({'Activities Invited':inviteList})
 	else:
@@ -444,7 +469,7 @@ def add_team(userId):
 		db.close()
 		return("fail")
 
-@app.route('/team/add/member/<teamId>', methods=['POST'])
+@app.route('/teams/add/member/<teamId>', methods=['POST'])
 def add_team_member(teamId):
 	if not request.json or not 'userId' in request.json:
 		abort(400, '{"message":"Input parameter incorrect or missing"}')
@@ -548,6 +573,24 @@ def get_notification(receiverId):
 	else: 
 		db.close()
 		abort(404, '{"message":"no notification"}')
+
+@app.route('/user/info/<userId>', methods=['GET'])
+def get_user_info(userId):
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT username,gender,email,description FROM User WHERE userId = '%s'"%userId)
+	if cursor.rowcount == 1:
+		infoList = cursor.fetchall()[0]
+		temp = {}
+		temp["username"] = infoList[0]
+		temp["gender"] = infoList[1]
+		temp["email"] = infoList[2]
+		temp["description"] = infoList[3]
+		db.close()
+		return jsonify({'Info':temp})
+	else:
+		db.close()
+		abort(404, 'no user exists')
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',port='80')
