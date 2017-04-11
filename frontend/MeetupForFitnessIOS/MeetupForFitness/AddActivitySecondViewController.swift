@@ -17,18 +17,21 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
     var sportType:String!
     var dateString:String!
     
+    var friendData = [(Int, String)]()
     
     @IBOutlet weak var friendListTableView: UITableView!
     @IBOutlet weak var maximumAttendanceField: UITextField!
     @IBOutlet weak var acitivtyLocationField: UITextField!
+    @IBOutlet weak var infoField: UITextField!
 
     @IBOutlet weak var mapView: MKMapView!
+    
+    @IBOutlet weak var createActivityButton: UIButton!
+    
     
     var matchingItems: [MKMapItem] = [MKMapItem]()
     
     var friendsInvitedIds = [Int]()
-    
-    let friendData = ["friend1","friend2","friend3"]
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -37,16 +40,58 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
         
         maximumAttendanceField.delegate = self
         acitivtyLocationField.delegate = self
+        infoField.delegate = self
         
         self.friendListTableView.allowsMultipleSelection = true
         // Do any additional setup after loading the view.
-        friendsInvitedIds.append(7)
-        friendsInvitedIds.append(8)
-        friendsInvitedIds.append(9)
-        friendsInvitedIds.append(15)
+        getFriendsFromServer()
     }
     
-    
+    func getFriendsFromServer() {
+        let ud = UserDefaults.standard
+        let userId = ud.integer(forKey: "currentUserId")
+        
+        Alamofire.request("http://@ec2-52-7-74-13.compute-1.amazonaws.com/friends/\(userId)", method: .get, encoding: JSONEncoding.default).validate().responseJSON { response in
+            switch response.result {
+            case .success:
+                print("Validation Successful")
+                if let json = response.result.value {
+                    self.friendData.removeAll()
+                    
+                    print("JSON: \(json)")
+                    let result = json as! NSDictionary
+                    let array = result["Friends List"] as! [Dictionary<String, Any>]
+                    for dict in array {
+                        //print("dict ---> \(dict)")
+                        let teamName = dict["username"] as! String
+                        
+                        let teamId = dict["userId"] as! Int
+                        
+                        self.friendData.append((teamId, teamName))
+                        
+                    }
+                    
+                    DispatchQueue.main.async(execute: {
+                        self.friendListTableView.reloadData()
+                    })
+                }
+            case .failure(let error):
+                print(error)
+                if let httpResponse = response.response {
+                    if httpResponse.statusCode == 404 {
+                        self.notifyFailure(info: "Currently no friends!")
+                    } else if httpResponse.statusCode == 400 {
+                        self.notifyFailure(info: "You don't have friends now!")
+                    } else {
+                        self.notifyFailure(info: "Cannot connect to server!")
+                    }
+                } else {
+                    self.notifyFailure(info: "Cannot connect to server!")
+                }
+                
+            }
+        }
+    }
     
     
     func performSearch() {
@@ -68,8 +113,8 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
                 print("Matches found")
                 
                 for item in response!.mapItems {
-                    print("Name = \(item.name)")
-                    print("Phone = \(item.phoneNumber)")
+                    print("Name = \(String(describing: item.name))")
+                    print("Phone = \(String(describing: item.phoneNumber))")
                     
                     self.matchingItems.append(item as MKMapItem)
                     print("Matching items = \(self.matchingItems.count)")
@@ -88,13 +133,14 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
     
     
     @IBAction func addNewActivity(_ sender: Any) {
+        self.createActivityButton.isEnabled = false
         
         let ud = UserDefaults.standard
         let userId = ud.integer(forKey: "currentUserId")
         
         let parameters: Parameters = [
             "aName": activityName,
-            "aInfo": "It's a fun game!",
+            "aInfo": infoField.text!,
             "location": acitivtyLocationField.text!,
             "aTime": dateString,
             "sportsType": sportType,
@@ -112,11 +158,18 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
                 } else {
                     self.notifyFailure(info: "Failed to add activity!")
                 }
+                self.createActivityButton.isEnabled = true
             case .failure(let error):
                 print(error)
                 self.notifyFailure(info: "Cannot connect to server!")
+                self.createActivityButton.isEnabled = true
             }
         }
+    }
+    
+    
+    @IBAction func cancel(_ sender: Any) {
+        self.dismiss(animated: true, completion: nil)
     }
     
     func sendAlart(info: String) {
@@ -147,7 +200,7 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
         let cellIdentifier = "friendListCell"
         let cell: UITableViewCell = friendListTableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
         let friendNameLabel = cell.contentView.viewWithTag(1) as! UILabel
-        friendNameLabel.text = friendData[indexPath.row]
+        friendNameLabel.text = friendData[indexPath.row].1
         
         cell.accessoryType = cell.isSelected ? .checkmark : .none
         cell.selectionStyle = .none // to prevent cells from being "highlighted"
@@ -159,11 +212,13 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.cellForRow(at: indexPath)?.accessoryType = .checkmark
-        friendsInvitedIds.append(indexPath.row+1)
+        let friend = friendData[indexPath.row]
+        friendsInvitedIds.append(friend.0)
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        friendsInvitedIds.remove(at: friendsInvitedIds.index(of: indexPath.row+1)!)
+        let friend = friendData[indexPath.row]
+        friendsInvitedIds.remove(at: friendsInvitedIds.index(of: friend.0)!)
         tableView.cellForRow(at: indexPath)?.accessoryType = .none
     }
     

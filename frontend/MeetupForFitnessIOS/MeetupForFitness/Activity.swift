@@ -13,6 +13,7 @@ class Activity: NSObject, NSCoding {
     let name: String!
     let sportsType: String!
     let teamName: String!
+    let username: String!
     let info: String!
     let aid: Int!
     let postTime: String!
@@ -22,10 +23,11 @@ class Activity: NSObject, NSCoding {
     let maxAttendance: Int!
     var attendedIds: [Int]!
     
-    init(name: String, sportsType: String, teamName: String, info: String, aid: Int, postTime: String, activityTime: String, userId: Int, teamId: Int, maxAttendance: Int, attendedIds: [Int], location: String) {
+    init(name: String, sportsType: String, teamName: String, username: String, info: String, aid: Int, postTime: String, activityTime: String, userId: Int, teamId: Int, maxAttendance: Int, attendedIds: [Int], location: String) {
         self.name = name
         self.sportsType = sportsType
         self.teamName = teamName
+        self.username = username
         self.info = info
         self.aid = aid
         self.postTime = postTime
@@ -41,6 +43,7 @@ class Activity: NSObject, NSCoding {
         self.name = decoder.decodeObject(forKey: "name") as! String
         self.sportsType = decoder.decodeObject(forKey: "sportsType") as! String
         self.teamName = decoder.decodeObject(forKey: "teamName") as! String
+        self.username = decoder.decodeObject(forKey: "username") as! String
         self.info = decoder.decodeObject(forKey: "info") as! String
         self.aid = decoder.decodeInteger(forKey: "aid")
         self.postTime = decoder.decodeObject(forKey: "postTime") as! String
@@ -56,6 +59,7 @@ class Activity: NSObject, NSCoding {
         aCoder.encode(name, forKey: "name")
         aCoder.encode(sportsType, forKey: "sportsType")
         aCoder.encode(teamName, forKey: "teamName")
+        aCoder.encode(username, forKey: "username")
         aCoder.encode(info, forKey: "info")
         if let aid = aid {
             aCoder.encode(aid, forKey: "aid")
@@ -66,10 +70,10 @@ class Activity: NSObject, NSCoding {
             aCoder.encode(userId, forKey: "userId")
         }
         if let teamId = teamId {
-            aCoder.encode(teamId, forKey: "userId")
+            aCoder.encode(teamId, forKey: "teamId")
         }
         if let maxAttendance = maxAttendance {
-            aCoder.encode(maxAttendance, forKey: "userId")
+            aCoder.encode(maxAttendance, forKey: "maxAttendance")
         }
         aCoder.encode(attendedIds, forKey: "attendedIds")
         aCoder.encode(location, forKey: "location")
@@ -86,9 +90,9 @@ class Activity: NSObject, NSCoding {
     
     func getOwnerName() -> String {
         if self.isPersonal() {
-            return "user \(self.userId!)"
+            return username
         }
-        return "team \(teamId!)"
+        return teamName
     }
     
     func isFull() -> Bool {

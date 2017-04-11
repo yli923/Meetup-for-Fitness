@@ -58,16 +58,20 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
                         let maxAttendance = dict["maxPeople"] as! Int
                         let attendedIds = dict["attended"] as! [Int]
                         let location = dict["location"] as! String
-                        
+                        let username = (dict["username"] as! [String]).first
                         var teamName:String!
                         if teamId == nil {
                             teamId = -1
                             teamName = ""
                         } else {
-                            teamName = teamNameArr!.first
+                            if teamNameArr != nil {
+                                teamName = teamNameArr!.first
+                            } else {
+                                teamName = "Unknown"
+                            }
                         }
                         
-                        let newActivity = Activity(name: activityName, sportsType: sportsType!, teamName: teamName!, info: info, aid: aid, postTime: postTime, activityTime: activityTime, userId: userId, teamId: teamId!, maxAttendance: maxAttendance, attendedIds: attendedIds, location: location)
+                        let newActivity = Activity(name: activityName, sportsType: sportsType!, teamName: teamName!, username: username!, info: info, aid: aid, postTime: postTime, activityTime: activityTime, userId: userId, teamId: teamId!, maxAttendance: maxAttendance, attendedIds: attendedIds, location: location)
                         
                         self.allActivities.append(newActivity)
                         
@@ -107,6 +111,42 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
         let encodedData: Data = NSKeyedArchiver.archivedData(withRootObject: activitiesToSave)
         UserDefaults.standard.set(encodedData, forKey: "activities")
         UserDefaults.standard.synchronize()
+    }
+    
+    func attendActivity(_ sender : AttendButton) {
+        if sender.aid == nil {
+            print("some errors here")
+            return
+        }
+        
+        sender.isEnabled = false
+        
+        let parameters: Parameters = [
+            "userId": userId,
+            "aid": sender.aid!
+        ]
+        print("param ---> \(parameters)")
+        Alamofire.request("http://@ec2-52-7-74-13.compute-1.amazonaws.com/activity/attend", method: .post, parameters: parameters, encoding: JSONEncoding.default).validate().responseString { response in
+            switch response.result {
+            case .success:
+                print("Response String: \(response.result.value!)")
+                if response.result.value! == "success" {
+                    DispatchQueue.main.async(execute: {
+                        self.allActivities[sender.indexPath!].newUserAttended(uid: self.userId)
+                        self.storeActivitiesToLocal()
+                        self.shownActivities = self.allActivities
+                        self.tableView.reloadData()
+                    })
+                } else {
+                    self.notifyFailure(info: "The activity is already full! Reload this  page to update!")
+                    sender.isEnabled = true
+                }
+            case .failure(let error):
+                print(error)
+                self.notifyFailure(info: "Cannot connect to server!")
+                sender.isEnabled = true
+            }
+        }
     }
     
     func sendAlart(info: String) {
@@ -191,41 +231,7 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
         
     }
     
-    func attendActivity(_ sender : AttendButton) {
-        if sender.aid == nil {
-            print("some errors here")
-            return
-        }
-        
-        sender.isEnabled = false
-        
-        let parameters: Parameters = [
-            "userId": userId,
-            "aid": sender.aid!
-        ]
-        print("param ---> \(parameters)")
-        Alamofire.request("http://@ec2-52-7-74-13.compute-1.amazonaws.com/activity/attend", method: .post, parameters: parameters, encoding: JSONEncoding.default).validate().responseString { response in
-            switch response.result {
-            case .success:
-                print("Response String: \(response.result.value!)")
-                if response.result.value! == "success" {
-                    DispatchQueue.main.async(execute: {
-                        self.allActivities[sender.indexPath!].newUserAttended(uid: self.userId)
-                        self.storeActivitiesToLocal()
-                        self.shownActivities = self.allActivities
-                        self.tableView.reloadData()
-                    })
-                } else {
-                    self.notifyFailure(info: "The activity is already full! Reload this  page to update!")
-                    sender.isEnabled = true
-                }
-            case .failure(let error):
-                print(error)
-                self.notifyFailure(info: "Cannot connect to server!")
-                sender.isEnabled = true
-            }
-        }
-    }
+    
     
 
     /*

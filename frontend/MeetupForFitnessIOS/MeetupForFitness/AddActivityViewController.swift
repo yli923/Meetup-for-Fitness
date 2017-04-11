@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+import Alamofire
 class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPickerViewDataSource, UITextFieldDelegate {
     
     @IBOutlet weak var activityNameField: UITextField!
@@ -18,7 +18,7 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
     
     var teamId = -1
     
-    
+    var teamData = [(Int, String)]()
     
     let teamPickerData = ["team1","team2","team3"]
     let sportPickerData = ["badminton","basketball","soccer","table tennis"]
@@ -40,9 +40,13 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
         
         activityNameField.delegate = self
         
+        getTeamsFromServer()
+        
         selectedTeam = teamPickerData[0]
         selectedSport = sportPickerData[0]
         // Do any additional setup after loading the view.
+        
+        dateString = timeSelection.date.toString(format: "EEE, dd LLL yyyy HH:mm:ss z")
     }
 
     func dateChanged(_ sender: UIDatePicker) {
@@ -63,6 +67,67 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
         }
     }
     
+    func getTeamsFromServer() {
+        
+        let ud = UserDefaults.standard
+        let userId = ud.integer(forKey: "currentUserId")
+        
+        Alamofire.request("http://@ec2-52-7-74-13.compute-1.amazonaws.com/teams/\(userId)", method: .get, encoding: JSONEncoding.default).validate().responseJSON { response in
+            switch response.result {
+            case .success:
+                print("Validation Successful")
+                if let json = response.result.value {
+                    self.teamData.removeAll()
+                    
+                    print("JSON: \(json)")
+                    let result = json as! NSDictionary
+                    let array = result["Team List"] as! [Dictionary<String, Any>]
+                    for dict in array {
+                        //print("dict ---> \(dict)")
+                        let teamName = dict["tname"] as! String
+                       
+                        let teamId = dict["teamId"] as! Int
+                        
+                        self.teamData.append((teamId, teamName))
+                        
+                    }
+                    
+                    DispatchQueue.main.async(execute: {
+                        self.teamSelections.reloadAllComponents()
+                    })
+                }
+            case .failure(let error):
+                print(error)
+                if let httpResponse = response.response {
+                    if httpResponse.statusCode == 404 {
+                        self.notifyFailure(info: "Currently no teams!")
+                    } else if httpResponse.statusCode == 400 {
+                        self.notifyFailure(info: "You don't have team now!")
+                    } else {
+                        self.notifyFailure(info: "Cannot connect to server!")
+                    }
+                } else {
+                    self.notifyFailure(info: "Cannot connect to server!")
+                }
+                
+            }
+        }
+    }
+    
+    func sendAlart(info: String) {
+        let alertController = UIAlertController(title: "Hey!", message: info, preferredStyle: UIAlertControllerStyle.alert)
+        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) {
+            (result : UIAlertAction) -> Void in
+            print("OK")
+        }
+        alertController.addAction(okAction)
+        self.present(alertController, animated: true, completion: nil)
+    }
+    
+    func notifyFailure(info: String) {
+        self.sendAlart(info: info)
+    }
+    
     // MARK: - pickerview delegate
     
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
@@ -72,7 +137,7 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         var count:Int?
         if pickerView == teamSelections {
-            count = teamPickerData.count
+            count = teamData.count
         } else if pickerView == sportSelections {
             count = sportPickerData.count
         }
@@ -82,7 +147,7 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         var title:String?
         if pickerView == teamSelections {
-            title = teamPickerData[row]
+            title = teamData[row].1
         } else if pickerView == sportSelections {
             title = sportPickerData[row]
         }
@@ -91,8 +156,8 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if pickerView == teamSelections {
-            selectedTeam = teamPickerData[row]
-            teamId = row
+            selectedTeam = teamData[row].1
+            teamId = teamData[row].0
         } else if pickerView == sportSelections {
             selectedSport = sportPickerData[row]
         }
@@ -104,16 +169,6 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
             return
         }
         self.performSegue(withIdentifier: "addNextNew", sender: self)
-    }
-    
-    func sendAlart(info: String) {
-        let alertController = UIAlertController(title: "Hey!", message: info, preferredStyle: UIAlertControllerStyle.alert)
-        let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) {
-            (result : UIAlertAction) -> Void in
-            print("OK")
-        }
-        alertController.addAction(okAction)
-        self.present(alertController, animated: true, completion: nil)
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

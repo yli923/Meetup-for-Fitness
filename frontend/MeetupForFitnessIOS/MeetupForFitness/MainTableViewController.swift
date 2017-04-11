@@ -37,6 +37,9 @@ class MainTableViewController: UITableViewController {
     var shownActivities = [Activity]()
     var userId:Int!
 
+    @IBOutlet weak var teamActivitySegmentControl: UISegmentedControl!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -50,6 +53,22 @@ class MainTableViewController: UITableViewController {
         super.viewWillAppear(animated)
         
         self.downloadMyActivities()
+        
+        
+    }
+    
+    
+    @IBAction func teamActivityShown(_ sender: Any) {
+        switch teamActivitySegmentControl.selectedSegmentIndex {
+        case 0:
+            shownActivities = myActivities
+            self.tableView.reloadData()
+        case 1:
+            filterOutPersonalInShownData()
+            self.tableView.reloadData()
+        default:
+            break
+        }
     }
     
     func downloadMyActivities() {
@@ -78,6 +97,7 @@ class MainTableViewController: UITableViewController {
                         let maxAttendance = dict["maxPeople"] as! Int
                         let attendedIds = dict["attended"] as! [Int]
                         let location = dict["location"] as! String
+                        let username = (dict["username"] as! [String]).first
                         
                         var teamName:String!
                         if teamId == nil {
@@ -87,7 +107,7 @@ class MainTableViewController: UITableViewController {
                             teamName = teamNameArr!.first
                         }
                         
-                        let newActivity = Activity(name: activityName, sportsType: sportsType!, teamName: teamName!, info: info, aid: aid, postTime: postTime, activityTime: activityTime, userId: userId, teamId: teamId!, maxAttendance: maxAttendance, attendedIds: attendedIds, location: location)
+                        let newActivity = Activity(name: activityName, sportsType: sportsType!, teamName: teamName!, username: username!, info: info, aid: aid, postTime: postTime, activityTime: activityTime, userId: userId, teamId: teamId!, maxAttendance: maxAttendance, attendedIds: attendedIds, location: location)
                         
                         self.myActivities.append(newActivity)
                         
@@ -98,6 +118,7 @@ class MainTableViewController: UITableViewController {
                         self.storeActivitiesToLocal()
                         self.shownActivities = self.myActivities
                         self.tableView.reloadData()
+                        self.teamActivityShown(self)
                     })
                 }
             case .failure(let error):
@@ -127,6 +148,16 @@ class MainTableViewController: UITableViewController {
         let encodedData: Data = NSKeyedArchiver.archivedData(withRootObject: activitiesToSave)
         UserDefaults.standard.set(encodedData, forKey: "activities")
         UserDefaults.standard.synchronize()
+    }
+    
+    func filterOutPersonalInShownData() {
+        var filtered = [Activity]()
+        for activity in shownActivities {
+            if activity.teamId != -1 {
+                filtered.append(activity)
+            }
+        }
+        shownActivities = filtered
     }
     
     func sendAlart(info: String) {
