@@ -305,7 +305,7 @@ def add_activity(userId):
 	try:
 		cursor.execute("INSERT INTO Activity(userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,attended) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",[userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,0])
 		aid = cursor.lastrowid
-		#cursor.execute("INSERT INTO AttendActivity(userId, aid) values (%s,%s)",[userId,aid])
+		cursor.execute("INSERT INTO FriendInvite(aid,friendId) values (%s,%s)",[aid,userId])
 		for friend in friendList:
 			friendCur = db.cursor()
 			friendCur.execute("INSERT INTO FriendInvite(aid,friendId) values (%s,%s)",[aid,friend])
