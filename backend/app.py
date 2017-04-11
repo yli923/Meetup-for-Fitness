@@ -62,7 +62,7 @@ def auth_signup():
 	else:
 		db.rollback()
 		db.close()
-		abort(400, '{fail: user exists!!!}')
+		abort(404, '{fail: user exists!!!}')
 
 @app.route('/auth/update/<userId>', methods=['POST'])
 def auth_update(userId):
@@ -312,7 +312,7 @@ def add_activity(userId):
 		db.commit()
 		db.close()
 		return("success")
-	except:
+	except:	
 		db.rollback()
 		db.close()
 		abort(400,"fail")
