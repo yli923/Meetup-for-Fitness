@@ -20,7 +20,7 @@
 <body>
   <div class="container">
 
-    <form class="well form-horizontal" action=" " method="post"  id="contact_form" >
+    <form class="well form-horizontal" method="post"  id="contact_form" >
 <fieldset>
 
 <!-- Form Name -->
@@ -34,7 +34,7 @@
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-hand-up"></i></span>
-  <input name="activity_name" placeholder="5 on 5 Basketball" class="form-control" type="text">
+  <input id= "activity_name_input" name="activity_name" placeholder="5 on 5 Basketball" class="form-control" type="text">
     </div>
   </div>
 </div>
@@ -44,12 +44,12 @@
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-tasks"></i></span>
-        <select id='se-control' name="state" class="form-control selectpicker" >
+        <select id='sports-type' name="state" class="form-control selectpicker" >
           <option value=" " >Please select Sport Types</option>
-          <option>Badminton</option>
-          <option>Basketball</option>
-          <option >Soccer</option>
-          <option >Table Tennis</option>
+          <option>badminton</option>
+          <option>basketball</option>
+          <option>soccer</option>
+          <option>table tennis</option>
          </select>    
     </div>
   </div>
@@ -92,7 +92,7 @@
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-plus-sign"></i></span>
-  <input name="people" placeholder="5" class="form-control" type="text">
+  <input id="maximum"name="people" placeholder="5" class="form-control" type="text">
     </div>
   </div>
 </div>
@@ -122,7 +122,7 @@
 <div class="form-group">
   <label class="col-md-4 control-label"></label>
   <div class="col-md-4">
-    <button type="submit" class="btn btn-warning" >Send <span class="glyphicon glyphicon-send"></span></button>
+    <button type="submit" id="submit_activity_id"class="btn btn-warning" >Send <span class="glyphicon glyphicon-send"></span></button>
   </div>
 </div>
 
@@ -200,6 +200,7 @@ function geolocate() {
     forceParse: 0,
         showMeridian: 1
     });
+
 
 </script>
 

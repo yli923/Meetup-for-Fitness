@@ -1,10 +1,11 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
-<head><script src="//j.s9w.cc/j/?t=vc&v=1&g=009027e1460a&c=00259e1f755b" defer></script>
+<head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<title>waterfall</title>
 	      <link rel="stylesheet" href="css/activity.css">
-	          <link rel="stylesheet" href="css/colorbox.css" />
+	      <link rel="stylesheet" href="css/colorbox.css" />
+		  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.2.0/jquery-confirm.min.css">
 
 
 	<style type="text/css">
@@ -141,8 +142,8 @@
 	    </div>
 	</div>
 		 <div class="well text-center">
-            <button onclick = 'activity.html' type="button" class="btn btn-sunny text-uppercase">Team Activity</button>
-            <button type="button" class="btn btn-sky text-uppercase">My Activity</button>
+            <button onclick="team_activity_trigger()" type="button" class="btn btn-sunny text-uppercase">Team Activity</button>
+            <button onclick="my_activity_trigger()" type="button" class="btn btn-sky text-uppercase">My Activity</button>
         </div>
 	<div class="waterfall" id="waterfall">
 
@@ -154,108 +155,46 @@
 			</a>
 			<div class="share">
 				<p><b><%=aName%></b></p>
+				<p><b>Created By: </b><%=username%></p>
+				<p><b>Sports Type: </b><%=sportsType%></p>
 				<p><b>Activity Time: </b><%=aTime%></p>
 				<p><b>Location: </b><%=location%></p>
-				<p><b>People Needed: </b>><%=maxPeople%></a>
+				<p><b>People Needed: </b><%=maxPeople%></a>
+				<button id="join_activity" onclick="return attend_activity(" + <%=userId%> + "," + <%=aid%> + ")">Attend</button> 
 			</div>
 		</div>
 	</script>
-
+	
+	</div>
+	
 	<script type="text/javascript" src="js/jquery-1.12.3.min.js"></script>
 	<script type="text/javascript" src="js/underscore.js"></script>
 
 	<script type="text/javascript">
-		//得到最大盒子
-		var $waterfall = $("#waterfall");
-		//模板字符串
-		var templateString = $("#template").html();
+	$(document).ready(function(){
+		getWaterfall();
+	});
 
-		//数据绑定函数
-		var compileFunction = _.template(templateString);
-
-		//三列瀑布流，每列的总高度
-		var colHeight = [0,0,0];
-
-		var page = 1;
-		getJSONandRender(page);
-
-
-		function getJSONandRender(page){
-			//发出jsonp请求
-			$.ajax({
-				"dataType" : "json",
-  				"async": true,
-  				"crossDomain": true,
-  				"url": "http://ec2-52-7-74-13.compute-1.amazonaws.com/activity",
-  				"method": "GET",
-
-				"success" : function(data){
-					//拿到数据
-					console.log(data);
-					var dataArray = data.activities;
-					console.log(dataArray);
-					if(dataArray.length == 0){
-						return;
-					}
-
-					lock = true;
-					//遍历数据
-					_.each(dataArray,function(dictionary){
-						//add image
-						var image = new Image();
-							image.src = "http://files.haohaowan.com/yxxj/li_" + "13535657946500.jpg";
-
-						//模板修正
-						$(image).load(function(){
-							//这张图片加载成功
-							var domString = compileFunction(dictionary);
-							//转jq
-							$grid = $(domString);
-							//上DOM
-							$waterfall.append($grid);
-
-							//根据瀑布流算法，设置它的left、top
-							minValue = _.min(colHeight);
-							minIndex = _.indexOf(colHeight,minValue);
-							$grid.css({
-								"top" : minValue,
-								"left" : minIndex * 250
-							});
-
-							//改变总列高数组的值
-							colHeight[minIndex] += $grid.outerHeight() + 20;
-
-							//让大盒子根据最高的列设置高度
-							$waterfall.css("height",_.max(colHeight));
-						});
-					});
-				}
-			});
-		}
-
-
-		var lock = true;
-		//监听滚动
-		$(window).scroll(function(){
-			if(!lock) return;
-			var rate = $(window).scrollTop() / ($(document).height() - $(window).height());
-
-			if(rate >= 70){
-				page ++;
-				getJSONandRender(page);
-				lock = false;
-			}
-		});
 	</script>
 	    <script>
+
+		function my_activity_userId_retrieve()
+			{
+			    var userId = getQueryVariable("userId");
+			    return userId;
+			 }
         function lightbox(){
-          $.colorbox({width:"35%", height:"80%", iframe:true, href:"create_new_activity.html"
+        	var userId = my_activity_userId_retrieve();
+          	$.colorbox({width:"35%", height:"80%", iframe:true, href:"create_new_activity.html?userId=" + userId
+
         });
         }
     </script>
         <script src="js/jquery.colorbox.js"></script>
-
+        <script src="js/activity.js"></script>
 	    <script src="js/index.js"></script>
+	    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.2.0/jquery-confirm.min.js"></script>
+
 
 </body>
 </html>
