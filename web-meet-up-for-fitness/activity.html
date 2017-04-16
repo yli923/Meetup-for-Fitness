@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<html xml:lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html;charset=UTF-8">
 	<title>waterfall</title>
@@ -153,14 +153,16 @@
 				<div class='sports'>
 				</div>
 			</a>
-			<div class="share">
+			<div class="share" id = "activity_add_on">
 				<p><b><%=aName%></b></p>
 				<p><b>Created By: </b><%=username%></p>
 				<p><b>Sports Type: </b><%=sportsType%></p>
 				<p><b>Activity Time: </b><%=aTime%></p>
 				<p><b>Location: </b><%=location%></p>
-				<p><b>People Needed: </b><%=maxPeople%></a>
-				<button id="join_activity" onclick="return attend_activity(" + <%=userId%> + "," + <%=aid%> + ")">Attend</button> 
+				<p><b>People Attended: </b><%=attended.length%>/<%=maxPeople%>
+				
+				<button id="join_activity" onclick="return attend_activity(\'' + userId + ',' + aid + '\')">Attend</button> 
+
 			</div>
 		</div>
 	</script>
