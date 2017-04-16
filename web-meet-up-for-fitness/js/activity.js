@@ -1,3 +1,4 @@
+
 function getWaterfall() {
         var page = 1;
         var initial = 1;
@@ -43,7 +44,6 @@ function get_my_activity_waterfall(userId) {
         });
 }
 function getJSONandRender(page, initial, userId){
-            console.log( initial);
             if(initial == 1) {
                 var url_addr = "http://ec2-52-7-74-13.compute-1.amazonaws.com/activity";
             }
@@ -72,20 +72,25 @@ function getJSONandRender(page, initial, userId){
 
                 "success" : function(data){
                     //拿到数据
-                    console.log(data);
                     var dataArray = data.activities;
                     console.log(dataArray);
                     if(dataArray.length == 0){
                         return;
                     }
-
                     lock = true;
+
                     //遍历数据
-                    _.each(dataArray,function(dictionary){
+                    $.each(dataArray,function(index, dictionary){
                         //add image
                         var image = new Image();
                             image.src = "../img/sports.jpg";
+                        console.log(dataArray[index]);
 
+                        // var info = document.getElementById("activity_btn");
+                        // var buttonnode= document.createElement('button');
+                        // buttonnode.setAttribute('value','Attend');
+
+                        // info.appendChild(buttonnode);
                         //模板修正
                         $(image).load(function(){
                             //这张图片加载成功

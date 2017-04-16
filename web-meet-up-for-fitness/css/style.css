@@ -67,7 +67,7 @@ a:focus{
     background-repeat: no-repeat;
     background-attachment: fixed;
     height: auto;
-    min-height: 710px;
+    min-height: 710px;  
     padding-top: 60px;
     color: #ffffff;
 }
@@ -93,11 +93,11 @@ a:focus{
 .header-text.btn:hover{
     color: inherit;
 }
-.header-text.btn:focus,
-.header-text.btn:active:focus,
-.header-text.btn.active:focus,
-.header-text.btn.focus,
-.header-text.btn:active.focus,
+.header-text.btn:focus, 
+.header-text.btn:active:focus, 
+.header-text.btn.active:focus, 
+.header-text.btn.focus, 
+.header-text.btn:active.focus, 
 .header-text.btn.active.focus {
     outline: thin dotted transparent;
     outline: none;
@@ -132,7 +132,7 @@ span.typed-cursor {
     position: relative;
 }
 /*.header-text{
-    margin-top: 20px;
+    margin-top: 20px;   
     position: absolute;
     border: 1px solid #ffffff;
     left: 25%;
@@ -156,15 +156,15 @@ nav#menu span.fa.fa-bars{
 width: 270px;
 z-index: 10;
 }
-.navmenu-default,
+.navmenu-default, 
 .navbar-default .navbar-offcanvas {
     background-color: #1E2429;
     border-color: #1E2429;
     border: 0;
 }
-.navmenu-default .navmenu-nav>li>a:hover,
-.navbar-default .navbar-offcanvas .navmenu-nav>li>a:hover,
-.navmenu-default .navmenu-nav>li>a:focus,
+.navmenu-default .navmenu-nav>li>a:hover, 
+.navbar-default .navbar-offcanvas .navmenu-nav>li>a:hover, 
+.navmenu-default .navmenu-nav>li>a:focus, 
 .navbar-default .navbar-offcanvas .navmenu-nav>li>a:focus {
 color: #C59A6D;
 background-color: transparent;
@@ -174,7 +174,7 @@ position: relative;
 display: block;
 text-align: center;
 }
-.navmenu-default .navmenu-nav>li>a,
+.navmenu-default .navmenu-nav>li>a, 
 .navbar-default .navbar-offcanvas .navmenu-nav>li>a {
 color: #ffffff;
 text-transform: uppercase;
@@ -184,11 +184,11 @@ line-height: 30px;
 nav#menu span.fa.fa-bars:hover {
 color: #C59A6D;
 }
-.navmenu-default .navmenu-nav>.active>a,
-.navbar-default .navbar-offcanvas .navmenu-nav>.active>a,
-.navmenu-default .navmenu-nav>.active>a:hover,
-.navbar-default .navbar-offcanvas .navmenu-nav>.active>a:hover,
-.navmenu-default .navmenu-nav>.active>a:focus,
+.navmenu-default .navmenu-nav>.active>a, 
+.navbar-default .navbar-offcanvas .navmenu-nav>.active>a, 
+.navmenu-default .navmenu-nav>.active>a:hover, 
+.navbar-default .navbar-offcanvas .navmenu-nav>.active>a:hover, 
+.navmenu-default .navmenu-nav>.active>a:focus, 
 .navbar-default .navbar-offcanvas .navmenu-nav>.active>a:focus {
 color: #C59A6D;
 background-color: transparent;
@@ -557,28 +557,28 @@ margin-bottom: 30px;
     -webkit-box-shadow: none;
     box-shadow: none;
 }
-input::-webkit-input-placeholder, textarea::-webkit-input-placeholder {
+input::-webkit-input-placeholder, textarea::-webkit-input-placeholder { 
     color:    #222222;
     font-family: 'Lato', sans-serif;
     font-size: 13px;
     letter-spacing: 1px;
     font-style: italic;
 }
-input:-moz-placeholder, textarea:-moz-placeholder {
+input:-moz-placeholder, textarea:-moz-placeholder { 
     color:    #222222;
     font-family: 'Lato', sans-serif;
     font-size: 13px;
     letter-spacing: 1px;
     font-style: italic;
 }
-input::-moz-placeholder, textarea::-moz-placeholder {
+input::-moz-placeholder, textarea::-moz-placeholder { 
     color:    #222222;
     font-family: 'Lato', sans-serif;
     font-size: 13px;
     letter-spacing: 1px;
     font-style: italic;
 }
-input:-ms-input-placeholder, textarea:-ms-input-placeholder {
+input:-ms-input-placeholder, textarea:-ms-input-placeholder { 
     color:    #222222;
     font-family: 'Lato', sans-serif;
     font-size: 13px;

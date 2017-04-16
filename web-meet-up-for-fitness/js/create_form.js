@@ -1,6 +1,48 @@
   $(document).ready(function() {
     document.getElementById ("submit_activity_id").addEventListener ("click", submit_new_activity, false);
 
+    var select_id = document.getElementById("se-control");
+    var option_fragment = document.createDocumentFragment();
+    var userId = getQueryVariable("userId");
+    var url_addr = "http://@ec2-52-7-74-13.compute-1.amazonaws.com/friends/" + userId;
+
+    $.ajax({
+        "dataType" : "json",
+        "async": false,
+        "crossDomain": true,
+        "url": url_addr,
+        "method": "GET",
+
+        success : function(data){
+            //拿到数据
+            console.log(data);
+            console.log(data["Friends List"].length);
+            var friends_array = data["Friends List"];
+            var friens_num = friends_array.length;
+
+            for (var i = 0; i < friens_num; i++) {
+                var option = document.createElement('option');
+                option.value = i;
+                option.appendChild(document.createTextNode( friends_array[i]['username']));
+                option_fragment.appendChild(option);
+            }
+            select_id.appendChild(option_fragment);
+        },
+        error: function(xhr, txtstatus, errorthrown) {
+             console.log(xhr);
+             console.log(txtstatus);
+        }
+    });
+
+
+    // for (var i = 1; i <= 30; i++) {
+    //     var option = document.createElement('option');
+    //     option.value = i;
+    //     option.appendChild(document.createTextNode("option #" + i));
+    //     df.appendChild(option);
+    // }
+    // elm.appendChild(df);
+
     $('#contact_form').bootstrapValidator({
         // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
         feedbackIcons: {
@@ -129,7 +171,7 @@ function submit_new_activity()
      
      $.ajax({
                 "data" : JSON.stringify(formData),
-                "async": true,
+                "async": false,
                 "crossDomain": true,
                 "url": "http://@ec2-52-7-74-13.compute-1.amazonaws.com/activity/add/allInfo/" + userId,
                 "method": "POST",
@@ -154,3 +196,4 @@ function submit_new_activity()
     return false;
 
 }
+
