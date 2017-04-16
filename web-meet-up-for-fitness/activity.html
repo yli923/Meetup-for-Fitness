@@ -134,9 +134,9 @@
 
 	            <div class="clickPopUp">
 	                <h4><a class="username" href=""></a></h4>
-	                <h5 class="buttons"><a class="username" href="">Create My Activity</a></h5>
-	                <h5 class="buttons"><a class="username" href='javascript:;' onclick='lightbox();'>Create Team Activity</a></h5>
-	                <h5 class="buttons"><a class="username" href="profile.html">Profile</a></h5>
+	                <h5 class="buttons"><a class="username" href='javascript:;' onclick='lightbox();'>Create My Activity</a></h5>
+	                <h5 class="buttons"><a class="username" href='javascript:;' onclick='lightbox2();'>Create Team Activity</a></h5>
+	                <h5 class="buttons"><a class="username"href='javascript:;' onclick='lightbox3();'>Profile</a></h5>
 	                <h5 class="buttons b"><a class="username" href="index.html">Log Out</a></h5>
 	            </div>
 	    </div>
@@ -160,15 +160,15 @@
 				<p><b>Activity Time: </b><%=aTime%></p>
 				<p><b>Location: </b><%=location%></p>
 				<p><b>People Attended: </b><%=attended.length%>/<%=maxPeople%>
-				
-				<button id="join_activity" onclick="return attend_activity(\'' + userId + ',' + aid + '\')">Attend</button> 
+
+				<button id="join_activity" onclick="return attend_activity(\'' + userId + ',' + aid + '\')">Attend</button>
 
 			</div>
 		</div>
 	</script>
-	
+
 	</div>
-	
+
 	<script type="text/javascript" src="js/jquery-1.12.3.min.js"></script>
 	<script type="text/javascript" src="js/underscore.js"></script>
 
@@ -191,6 +191,18 @@
 
         });
         }
+				function lightbox2(){
+					var userId = my_activity_userId_retrieve();
+						$.colorbox({width:"35%", height:"80%", iframe:true, href:"create_new_team_activity.html?userId=" + userId
+
+				});
+				}
+				function lightbox3(){
+					var userId = my_activity_userId_retrieve();
+						$.colorbox({width:"35%", height:"80%", iframe:true, href:"profile.html?userId=" + userId
+
+				});
+				}
     </script>
         <script src="js/jquery.colorbox.js"></script>
         <script src="js/activity.js"></script>
