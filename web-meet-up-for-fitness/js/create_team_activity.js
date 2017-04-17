@@ -119,7 +119,7 @@ function submit_new_activity()
               "aName": $('#activity_name_input').val(),
               "sportsType": $('#sports-type option:selected').val(),
               "aTime"   : $('#time-input').val(),
-              "friendList"  : "69",
+              "friendList"  : $('#friend_name').val()
               "maxPeople": $('#maximum').val(),
               "teamId": $('#team_name').val(),
               "aInfo" : "fun gamdde",
