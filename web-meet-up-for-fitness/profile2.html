@@ -9,54 +9,39 @@
 <body>
   <div id="w">
     <div id="content" class="clearfix">
-      <div id="userphoto"><img src="img/avatar.png" alt="default avatar"></div>
+      <div id="userphoto"><img src="img/profile_pics.jpg" alt="default avatar" height="180" width="180"></div>
       <h1>My Profile</h1>
       <nav id="profiletabs">
         <ul class="clearfix">
           <li><a href="#bio" class="sel">Bio</a></li>
-          <li><a href="#activity">Activity</a></li>
+          <li><a href="#notification">Activity</a></li>
           <li><a href="#friends">Friends</a></li>
-          <li><a href="#settings">Settings</a></li>
         </ul>
       </nav>
 
       <section id="bio">
-        <p>Tell us about yourself!</a>.</p>
-        <input type="button" value="Back" onclick="history.back(-1)" />
+        <p class = "activity">Personal Information:</p>
+        <p id = "username" class = "activity"> </p>
+        <p id = "email" class = "activity"> </p>
+        <p id = "gender" class = "activity"> </p>
       </section>
 
-      <section id="activity" class="hidden">
-        <p>Recent activities:</p>
+      <section id="notification" class="hidden">
+        <p class = "activity">My friends:</p>
+        <p id = "notification_name" class = "activity"> </p>
 
-        <p class="activity">@8:15PM - Posted a comment</p>
-
-        <p class="activity">@4:30PM - Added <strong>someusername</strong> as a friend</p>
-
-        <p class="activity">@12:30PM - Submitted a news article</p>
-
-        <input type="button" value="Back" onclick="history.back(-1)" />
       </section>
 
 
 
       <section id="friends" class="hidden">
-        <p>Recent activities:</p>
+        <p class = "activity">My friends:</p>
         <p id = "friend_name" class = "activity"> </p>
-        <p id = "friend_name" class = "activity">lllll </p>
 
       </section>
 
 
-      <section id="settings" class="hidden">
-        <p>Edit your user settings:</p>
 
-        <p class="setting"><span>E-mail Address <img src="img/edit.png" alt="*Edit*"></span> lolno@gmail.com</p>
-
-        <p class="setting"><span>Language <img src="img/edit.png" alt="*Edit*"></span> English(US)</p>
-
-        <p class="setting"><span>Connected Accounts <img src="img/edit.png" alt="*Edit*"></span> None</p>
-        <input type="button" value="Back" onclick="history.back(-1)" />
-      </section>
     </div><!-- @end #content -->
   </div><!-- @end #w -->
 <script type="text/javascript">
@@ -109,9 +94,57 @@ $(function(){
         for (var i = 0; i < result['Friends List'].length; i++)
         {
           //p = document.createElement("P");
-          text = document.createTextNode(result['Friends List'][0]['username'])
-          x.append(text);
+          p = document.createElement("P");
+          text = document.createTextNode(result['Friends List'][i]['username'])
+          p.append(text);
+          x.append(p);
         }
+</script>
+
+
+<script>
+  //notifications
+    //need to change
+    var userID = 65;
+    var result;
+     $.ajax({
+               "dataType": "json",
+                "async": false,
+                "crossDomain": true,
+                "url": "http://@ec2-52-7-74-13.compute-1.amazonaws.com/user/info/" + userID,
+                "method": "GET",
+                "headers": {
+                    "content-type": "application/json",
+                },
+                "processData": false,
+                success: function(data){
+                    result = data;
+                },
+
+                error: function(jqxhr, textStatus, errorThrown){
+                    console.log("error");
+                    console.log(textStatus);
+                    console.log(errorThrown);
+
+                }
+        });
+        console.log(result);
+        var x = document.getElementById("username");
+        var p = document.createElement("P");
+        text = document.createTextNode("username: " + result['Info']['username'])
+        p.append(text);
+        x.append(p);
+
+        var p2 = document.createElement("P");
+        text2 = document.createTextNode("email: " + result['Info']['email'])
+        p2.append(text2);
+        x.append(p2);
+
+        var p3 = document.createElement("P");
+        text3 = document.createTextNode("gender: " + result['Info']['gender'])
+        p3.append(text3);
+        x.append(p3);
+
 
 
 </script>
