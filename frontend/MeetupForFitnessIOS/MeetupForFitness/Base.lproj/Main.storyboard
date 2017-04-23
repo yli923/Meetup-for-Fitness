@@ -260,7 +260,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="200" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Cuq-0b-7iX">
-                                <rect key="frame" x="0.0" y="56" width="375" height="611"/>
+                                <rect key="frame" x="0.0" y="56" width="375" height="562"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="mainActivityCell" rowHeight="200" id="uvz-Sn-ILJ">
@@ -358,6 +358,9 @@
                                     <segment title="all"/>
                                     <segment title="popular"/>
                                 </segments>
+                                <connections>
+                                    <action selector="switchToPopularOrNearby:" destination="q2Q-4A-dol" eventType="valueChanged" id="204-r1-oAD"/>
+                                </connections>
                             </segmentedControl>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -375,6 +378,7 @@
                         <inset key="imageInsets" minX="5" minY="5" maxX="5" maxY="5"/>
                     </tabBarItem>
                     <connections>
+                        <outlet property="popularOrNearbySegmentControl" destination="cih-P2-Gc0" id="AHB-yi-TbK"/>
                         <outlet property="tableView" destination="Cuq-0b-7iX" id="pPT-MR-C9d"/>
                     </connections>
                 </viewController>
@@ -465,7 +469,7 @@
                                 </date>
                             </datePicker>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xLH-jf-3A6">
-                                <rect key="frame" x="82" y="622" width="210" height="30"/>
+                                <rect key="frame" x="82" y="573" width="210" height="30"/>
                                 <color key="backgroundColor" red="0.14901960780000001" green="0.64705882349999999" blue="0.50588235290000005" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="30" id="B6d-rx-h02"/>
@@ -621,6 +625,9 @@
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cEP-N6-ax8">
                                 <rect key="frame" x="9" y="24" width="34" height="30"/>
                                 <state key="normal" title="Back"/>
+                                <connections>
+                                    <action selector="cancel:" destination="fBI-Ug-Exj" eventType="touchUpInside" id="dZZ-kH-ebR"/>
+                                </connections>
                             </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -678,7 +685,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="70" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="qVb-Ea-iUL">
-                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <rect key="frame" x="0.0" y="108" width="375" height="510"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <prototypes>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="friendOrTeamCell" rowHeight="70" id="oab-nz-UxS">
@@ -714,7 +721,7 @@
                                 </prototypes>
                             </tableView>
                             <segmentedControl opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="top" segmentControlStyle="plain" selectedSegmentIndex="0" translatesAutoresizingMaskIntoConstraints="NO" id="2Zo-KJ-nH6">
-                                <rect key="frame" x="16" y="28" width="343" height="29"/>
+                                <rect key="frame" x="16" y="72" width="343" height="29"/>
                                 <segments>
                                     <segment title="Friends"/>
                                     <segment title="Teams"/>
@@ -2156,7 +2163,7 @@
         <image name="tab_profile" width="50" height="50"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="B5A-C8-rHb"/>
         <segue reference="dsv-cz-bXY"/>
+        <segue reference="pcK-PM-0cU"/>
     </inferredMetricsTieBreakers>
 </document>

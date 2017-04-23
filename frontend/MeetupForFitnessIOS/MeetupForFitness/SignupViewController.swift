@@ -68,7 +68,15 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
                 }
             case .failure(let error):
                 print(error)
-                self.notifyFailure(info: "Cannot connect to server!")
+                if let httpResponse = response.response {
+                    if httpResponse.statusCode == 404 {
+                        self.notifyFailure(info: "This username already exists!")
+                    }else {
+                        self.notifyFailure(info: "Cannot connect to server!")
+                    }
+                } else {
+                    self.notifyFailure(info: "Cannot connect to server!")
+                }
             }
         }
     }

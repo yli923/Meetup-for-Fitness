@@ -17,6 +17,9 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
     var shownActivities = [Activity]()
     var userId:Int!
     
+    @IBOutlet weak var popularOrNearbySegmentControl: UISegmentedControl!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -30,6 +33,29 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
         super.viewWillAppear(animated)
         
         self.downloadActivities()
+    }
+    
+    
+    @IBAction func switchToPopularOrNearby(_ sender: Any) {
+        switch popularOrNearbySegmentControl.selectedSegmentIndex {
+        case 0:
+            self.shownActivities = self.allActivities
+            self.tableView.reloadData()
+        case 1:
+            presentPopularActivities()
+        default:
+            break
+        }
+    }
+    
+    func presentPopularActivities() {
+        self.shownActivities.removeAll()
+        for activity in allActivities {
+            if activity.getAttendedAmount() >= activity.maxAttendance {
+                self.shownActivities.append(activity)
+            }
+        }
+        self.tableView.reloadData()
     }
 
     func downloadActivities() {
@@ -70,9 +96,7 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
                                 teamName = "Unknown"
                             }
                         }
-                        
                         let newActivity = Activity(name: activityName, sportsType: sportsType!, teamName: teamName!, username: username!, info: info, aid: aid, postTime: postTime, activityTime: activityTime, userId: userId, teamId: teamId!, maxAttendance: maxAttendance, attendedIds: attendedIds, location: location)
-                        
                         self.allActivities.append(newActivity)
                         
                     }
@@ -83,7 +107,7 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
                         self.shownActivities = self.allActivities
                         self.tableView.reloadData()
                     })
-                }
+                 }
             case .failure(let error):
                 print(error)
                 if let httpResponse = response.response {
