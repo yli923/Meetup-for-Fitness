@@ -216,6 +216,20 @@ class MainTableViewController: UITableViewController {
         cell.location = currentActivity.location
         cell.attended = currentActivity.getAttendedAmount()
         
+        let isPersonalOrTeamLabel = cell.contentView.viewWithTag(4) as! UILabel
+        let organizorLabel = cell.contentView.viewWithTag(5) as! UILabel
+        if currentActivity.isPersonal() {
+            isPersonalOrTeamLabel.text = "Personal"
+            organizorLabel.text = "Organizor"
+            cell.contentView.viewWithTag(6)?.isHidden = true
+        } else {
+            isPersonalOrTeamLabel.text = "Team"
+            organizorLabel.text = "Leading team"
+            cell.contentView.viewWithTag(6)?.isHidden = false
+            let leaderLabel = cell.contentView.viewWithTag(6) as! UILabel
+            leaderLabel.text = "led by \(currentActivity.username!)"
+        }
+        
         if currentActivity.isFull() {
             cell.status = "Full"
         } else {
