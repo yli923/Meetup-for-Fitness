@@ -51,7 +51,7 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
     func presentPopularActivities() {
         self.shownActivities.removeAll()
         for activity in allActivities {
-            if activity.getAttendedAmount() >= activity.maxAttendance {
+            if activity.getAttendedAmount() >= activity.maxAttendance / 2 {
                 self.shownActivities.append(activity)
             }
         }
@@ -90,7 +90,7 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
                             teamId = -1
                             teamName = ""
                         } else {
-                            if teamNameArr != nil {
+                            if teamNameArr != nil && (teamNameArr?.count)! > 0 {
                                 teamName = teamNameArr!.first
                             } else {
                                 teamName = "Unknown"

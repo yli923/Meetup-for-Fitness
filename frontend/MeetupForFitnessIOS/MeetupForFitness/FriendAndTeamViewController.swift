@@ -26,6 +26,10 @@ class FriendAndTeamViewController: UIViewController, UITableViewDelegate, UITabl
         
         // Do any additional setup after loading the view.
         
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
+        self.tableView.backgroundColor = .clear
+        self.friendOrTeamSegment.tintColor = .white
+        
         tableView.delegate = self
         tableView.dataSource = self
         
@@ -233,6 +237,8 @@ class FriendAndTeamViewController: UIViewController, UITableViewDelegate, UITabl
         let nameLabel = cell.contentView.viewWithTag(1) as! UILabel
         let addToTeamButton = cell.contentView.viewWithTag(2) as! AddButton
         
+        nameLabel.textColor = .white
+        
         var currentData: (Int, String)!
         if isFriend {
             currentData = friendData[indexPath.row]
@@ -251,6 +257,7 @@ class FriendAndTeamViewController: UIViewController, UITableViewDelegate, UITabl
         
         nameLabel.text = currentData.1
         
+        cell.backgroundColor = .clear
         
         return cell
         

@@ -15,11 +15,51 @@ class UserProfileViewController: UIViewController {
     @IBOutlet weak var genderLabel: UILabel!
     @IBOutlet weak var descriptionLabel: UILabel!
     
+    @IBOutlet weak var notificationView: UIView!
+    @IBOutlet weak var editProfileView: UIView!
+    @IBOutlet weak var logoutView: UIView!
+    @IBOutlet weak var profileView: UIView!
+    
+    @IBOutlet weak var notificationButton: UIButton!
+    @IBOutlet weak var editProfileButton: UIButton!
+    @IBOutlet weak var logoutButton: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
+        
+        notificationView.backgroundColor = .clear
+        editProfileView.backgroundColor = .clear
+        logoutView.backgroundColor = .clear
+        profileView.backgroundColor = .clear
+        
+        let blurEffect = UIBlurEffect(style: .light)
+        let blurEffectView = UIVisualEffectView(effect: blurEffect)
+        blurEffectView.frame = notificationView.bounds
+        blurEffectView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        notificationView.addSubview(blurEffectView)
+        notificationView.bringSubview(toFront: notificationButton)
+        
+        let blurEffectView2 = UIVisualEffectView(effect: blurEffect)
+        blurEffectView2.frame = editProfileView.bounds
+        blurEffectView2.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        editProfileView.addSubview(blurEffectView2)
+        editProfileView.bringSubview(toFront: editProfileButton)
+        
+        let blurEffectView3 = UIVisualEffectView(effect: blurEffect)
+        blurEffectView3.frame = logoutView.bounds
+        blurEffectView3.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        logoutView.addSubview(blurEffectView3)
+        logoutView.bringSubview(toFront: logoutButton)
+        
+        let blurEffectView4 = UIVisualEffectView(effect: blurEffect)
+        blurEffectView4.frame = profileView.bounds
+        blurEffectView4.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        profileView.addSubview(blurEffectView4)
+        profileView.sendSubview(toBack: blurEffectView4)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {

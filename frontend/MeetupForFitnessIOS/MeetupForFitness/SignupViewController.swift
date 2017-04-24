@@ -20,6 +20,7 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
         userNameField.delegate = self
         emailField.delegate = self
         passwordField.delegate = self

@@ -24,6 +24,8 @@ class UpdateUserInfoViewController: UIViewController, UITextFieldDelegate, UIPic
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
+        
         emailField.delegate = self
         userDescription.delegate = self
         
@@ -102,8 +104,8 @@ class UpdateUserInfoViewController: UIViewController, UITextFieldDelegate, UIPic
         return genderData.count
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return genderData[row]
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        return NSAttributedString(string: genderData[row], attributes: [NSForegroundColorAttributeName : UIColor.white])
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

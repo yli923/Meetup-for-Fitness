@@ -44,7 +44,7 @@ class MainTableViewController: UITableViewController {
         super.viewDidLoad()
         
         createCellHeightsArray()
-        self.tableView.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
+        self.tableView.backgroundView = UIImageView(image: UIImage(named: "backgroundIamge"))
         
         userId = UserDefaults.standard.integer(forKey: "currentUserId")
     }
@@ -104,7 +104,11 @@ class MainTableViewController: UITableViewController {
                             teamId = -1
                             teamName = ""
                         } else {
-                            teamName = teamNameArr!.first
+                            if teamNameArr != nil && (teamNameArr?.count)! > 0 {
+                                teamName = teamNameArr!.first
+                            } else {
+                                teamName = "Unknown"
+                            }
                         }
                         
                         let newActivity = Activity(name: activityName, sportsType: sportsType!, teamName: teamName!, username: username!, info: info, aid: aid, postTime: postTime, activityTime: activityTime, userId: userId, teamId: teamId!, maxAttendance: maxAttendance, attendedIds: attendedIds, location: location)

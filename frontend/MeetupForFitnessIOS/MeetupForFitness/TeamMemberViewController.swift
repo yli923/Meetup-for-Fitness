@@ -21,9 +21,10 @@ class TeamMemberViewController: UIViewController,  UITableViewDelegate, UITableV
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
         tableView.delegate = self
         tableView.dataSource = self
-        
+        self.tableView.backgroundColor = .clear
         getTeamMembers()
     }
 
@@ -108,6 +109,7 @@ class TeamMemberViewController: UIViewController,  UITableViewDelegate, UITableV
         let currentMember = teamMemberData[indexPath.row]
         
         let nameLabel = cell.contentView.viewWithTag(1) as! UILabel
+        nameLabel.textColor = .white
         
         nameLabel.text = currentMember.1
         
@@ -119,6 +121,8 @@ class TeamMemberViewController: UIViewController,  UITableViewDelegate, UITableV
         }
         
         cell.selectionStyle = .none // to prevent cells from being "highlighted"
+        cell.backgroundColor = .clear
+        
         return cell
         
     }

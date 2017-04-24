@@ -29,6 +29,13 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
+        
+        personalOrTeamSegmentControl.tintColor = .white
+        
+        
+        timeSelection.setValue(UIColor.white, forKeyPath: "textColor")
+        timeSelection.minimumDate = timeSelection.date
         timeSelection.addTarget(self, action: #selector(dateChanged(_:)), for: .valueChanged)
         
         teamSelections.isHidden = true
@@ -144,14 +151,15 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
         return count!
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
         var title:String?
         if pickerView == teamSelections {
             title = teamData[row].1
         } else if pickerView == sportSelections {
             title = sportPickerData[row]
         }
-        return title!
+        let attString = NSAttributedString(string: title!, attributes: [NSForegroundColorAttributeName : UIColor.white])
+        return attString
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

@@ -20,10 +20,11 @@ class SearchUserViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
         
         tableView.delegate = self
         tableView.dataSource = self
-        
+        self.tableView.backgroundColor = .clear
         searchField.delegate = self
     }
 
@@ -145,6 +146,8 @@ class SearchUserViewController: UIViewController, UITableViewDelegate, UITableVi
         let nameLabel = cell.contentView.viewWithTag(1) as! UILabel
         nameLabel.text = currentUser.1
         
+        nameLabel.textColor = .white
+        
         let addFriendButton = cell.contentView.viewWithTag(2) as! AddButton
         addFriendButton.addTarget(self, action: #selector(self.sendFriendRequest(_:)), for: .touchUpInside)
         addFriendButton.indexPath = indexPath.row
@@ -152,6 +155,8 @@ class SearchUserViewController: UIViewController, UITableViewDelegate, UITableVi
         
         
         cell.selectionStyle = .none // to prevent cells from being "highlighted"
+        
+        cell.backgroundColor = .clear
         
         return cell
         

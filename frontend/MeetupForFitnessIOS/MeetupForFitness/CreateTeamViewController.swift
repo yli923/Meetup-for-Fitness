@@ -24,6 +24,8 @@ class CreateTeamViewController: UIViewController, UITextFieldDelegate, UIPickerV
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
+        
         teamNameField.delegate = self
         teamInfoField.delegate = self
         
@@ -101,8 +103,8 @@ class CreateTeamViewController: UIViewController, UITextFieldDelegate, UIPickerV
         return sportPickerData.count
     }
     
-    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
-        return sportPickerData[row]
+    func pickerView(_ pickerView: UIPickerView, attributedTitleForRow row: Int, forComponent component: Int) -> NSAttributedString? {
+        return NSAttributedString(string: sportPickerData[row], attributes: [NSForegroundColorAttributeName : UIColor.white])
     }
     
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
