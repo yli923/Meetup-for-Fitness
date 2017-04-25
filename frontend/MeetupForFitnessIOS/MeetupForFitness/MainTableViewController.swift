@@ -29,7 +29,7 @@ class MainTableViewController: UITableViewController {
     let kCloseCellHeight: CGFloat = 179
     let kOpenCellHeight: CGFloat = 415
 
-    let kRowsCount = 10
+    var kRowsCount = 10
     
     var cellHeights = [CGFloat]()
     
@@ -62,9 +62,11 @@ class MainTableViewController: UITableViewController {
         switch teamActivitySegmentControl.selectedSegmentIndex {
         case 0:
             shownActivities = myActivities
+            self.createCellHeightsArray()
             self.tableView.reloadData()
         case 1:
             filterOutPersonalInShownData()
+            self.createCellHeightsArray()
             self.tableView.reloadData()
         default:
             break
@@ -121,6 +123,7 @@ class MainTableViewController: UITableViewController {
                         self.sortByDate()
                         self.storeActivitiesToLocal()
                         self.shownActivities = self.myActivities
+                        self.createCellHeightsArray()
                         self.tableView.reloadData()
                         self.teamActivityShown(self)
                     })
@@ -180,7 +183,12 @@ class MainTableViewController: UITableViewController {
     
     // MARK: configure
     func createCellHeightsArray() {
-        for _ in 0...kRowsCount {
+        cellHeights.removeAll()
+        kRowsCount = shownActivities.count
+        if kRowsCount <= 0 {
+            return
+        }
+        for _ in 0...kRowsCount-1 {
             cellHeights.append(kCloseCellHeight)
         }
     }

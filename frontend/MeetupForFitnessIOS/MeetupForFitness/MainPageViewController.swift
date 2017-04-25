@@ -16,7 +16,7 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
     let kCloseCellHeight: CGFloat = 179
     let kOpenCellHeight: CGFloat = 415
     
-    let kRowsCount = 10
+    var kRowsCount = 10
     
     var cellHeights = [CGFloat]()
     
@@ -33,14 +33,13 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
         self.tableView.delegate = self
         self.tableView.dataSource = self
         // Do any additional setup after loading the view.
-        createCellHeightsArray()
+        
          self.tableView.backgroundView = UIImageView(image: UIImage(named: "backgroundIamge"))
         userId = UserDefaults.standard.integer(forKey: "currentUserId")
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
         self.downloadActivities()
     }
     
@@ -49,6 +48,7 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
         switch popularOrNearbySegmentControl.selectedSegmentIndex {
         case 0:
             self.shownActivities = self.allActivities
+            self.createCellHeightsArray()
             self.tableView.reloadData()
         case 1:
             presentPopularActivities()
@@ -64,6 +64,7 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
                 self.shownActivities.append(activity)
             }
         }
+        self.createCellHeightsArray()
         self.tableView.reloadData()
     }
 
@@ -114,6 +115,7 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
                         self.sortByDate()
                         self.storeActivitiesToLocal()
                         self.shownActivities = self.allActivities
+                        self.createCellHeightsArray()
                         self.tableView.reloadData()
                     })
                  }
@@ -168,6 +170,7 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
                         self.allActivities[sender.indexPath!].newUserAttended(uid: self.userId)
                         self.storeActivitiesToLocal()
                         self.shownActivities = self.allActivities
+                        self.createCellHeightsArray()
                         self.tableView.reloadData()
                     })
                 } else {
@@ -198,7 +201,12 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
     
     // MARK: configure
     func createCellHeightsArray() {
-        for _ in 0...kRowsCount {
+        cellHeights.removeAll()
+        kRowsCount = shownActivities.count
+        if kRowsCount <= 0 {
+            return
+        }
+        for _ in 1...kRowsCount {
             cellHeights.append(kCloseCellHeight)
         }
     }
@@ -206,10 +214,12 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
     // MARK: - Table view data source
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
         return shownActivities.count
     }
     
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        
         
         guard case let cell as DemoCell = cell else {
             return
