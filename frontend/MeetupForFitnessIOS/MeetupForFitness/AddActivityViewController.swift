@@ -91,11 +91,17 @@ class AddActivityViewController: UIViewController, UIPickerViewDelegate, UIPicke
                     let array = result["Team List"] as! [Dictionary<String, Any>]
                     for dict in array {
                         //print("dict ---> \(dict)")
-                        let teamName = dict["tname"] as! String
-                       
-                        let teamId = dict["teamId"] as! Int
+                        let isLeader = dict["isLeader"] as! Bool
                         
-                        self.teamData.append((teamId, teamName))
+                        if isLeader {
+                            let teamName = dict["tname"] as! String
+                            
+                            let teamId = dict["teamId"] as! Int
+                            
+                            self.teamData.append((teamId, teamName))
+                        }
+                        
+                        
                         
                     }
                     
