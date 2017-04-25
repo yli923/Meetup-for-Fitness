@@ -20,9 +20,10 @@ class TeamInviteViewController: UIViewController, UITableViewDelegate, UITableVi
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
         tableView.delegate = self
         tableView.dataSource = self
-        
+        self.tableView.backgroundColor = .clear
         getTeamFromServer()
     }
 
@@ -148,6 +149,7 @@ class TeamInviteViewController: UIViewController, UITableViewDelegate, UITableVi
         currentData = teamData[indexPath.row]
         
         nameLabel.text = currentData.1
+        nameLabel.textColor = .white
         
         let teamInviteButton = cell.contentView.viewWithTag(2) as! AddButton
         teamInviteButton.addTarget(self, action: #selector(self.sendTeamInvitation(_:)), for: .touchUpInside)
@@ -155,6 +157,8 @@ class TeamInviteViewController: UIViewController, UITableViewDelegate, UITableVi
         teamInviteButton.anotherId = currentData.0
         
         cell.selectionStyle = .none // to prevent cells from being "highlighted"
+        
+        cell.backgroundColor = .clear
         
         return cell
         

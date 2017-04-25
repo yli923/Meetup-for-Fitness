@@ -30,6 +30,10 @@ class NotificationViewController: UIViewController, UITableViewDelegate, UITable
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
+        self.tableView.backgroundColor = .clear
+        self.friendOrTeamOrActivitySegmentControl.tintColor = .white
+        
         segmentCode = FRIEND_CODE
         tableView.delegate = self
         tableView.dataSource = self
@@ -350,6 +354,7 @@ class NotificationViewController: UIViewController, UITableViewDelegate, UITable
             let firstLineLabel = cell.contentView.viewWithTag(1) as! UILabel
             let postTimeLabel = cell.contentView.viewWithTag(8) as! UILabel
             let acceptButton = cell.contentView.viewWithTag(7) as! AddButton
+            acceptButton.removeTarget(nil, action: nil, for: .allEvents)
             
             cell.contentView.viewWithTag(4)?.isHidden = true
             cell.contentView.viewWithTag(5)?.isHidden = true
@@ -358,6 +363,10 @@ class NotificationViewController: UIViewController, UITableViewDelegate, UITable
             firstLineLabel.text = "A friend request"
             secondLineLabel.text = "from"
             senderNameLabel.text = currentFriendRequest.1
+            
+            firstLineLabel.textColor = .white
+            secondLineLabel.textColor = .lightGray
+            senderNameLabel.textColor = .white
             
             let postTime = dateFormatter.date(from: currentFriendRequest.2)
             
@@ -382,6 +391,7 @@ class NotificationViewController: UIViewController, UITableViewDelegate, UITable
             let postTimeLabel = cell.contentView.viewWithTag(8) as! UILabel
             let teamLeaderLabel = cell.contentView.viewWithTag(4) as! UILabel
             let acceptButton = cell.contentView.viewWithTag(7) as! AddButton
+            acceptButton.removeTarget(nil, action: nil, for: .allEvents)
             
             cell.contentView.viewWithTag(5)?.isHidden = true
             cell.contentView.viewWithTag(6)?.isHidden = true
@@ -390,6 +400,11 @@ class NotificationViewController: UIViewController, UITableViewDelegate, UITable
             secondLineLabel.text = "from"
             senderTeamLabel.text = "team \(currentTeamInvitation.3)"
             teamLeaderLabel.text = "led by: \(currentTeamInvitation.1)"
+            
+            firstLineLabel.textColor = .white
+            secondLineLabel.textColor = .lightGray
+            senderTeamLabel.textColor = .white
+            teamLeaderLabel.textColor = .lightGray
             
             let postTime = dateFormatter.date(from: currentTeamInvitation.4)
             
@@ -420,6 +435,15 @@ class NotificationViewController: UIViewController, UITableViewDelegate, UITable
             let attendanceLabel = cell.contentView.viewWithTag(6) as! UILabel
             let attendButton = cell.contentView.viewWithTag(7) as! AddButton
             let postTimeLabel = cell.contentView.viewWithTag(8) as! UILabel
+            
+            attendButton.removeTarget(nil, action: nil, for: .allEvents)
+            
+            activityNameLabel.textColor = .white
+            sportTypeLabel.textColor = .lightGray
+            ownerLabel.textColor = .white
+            activityTimeLabel.textColor = .lightGray
+            locationLabel.textColor = .lightGray
+            attendanceLabel.textColor = .white
             
             activityNameLabel.text = currentActivity.name
             sportTypeLabel.text = currentActivity.sportsType
@@ -458,6 +482,8 @@ class NotificationViewController: UIViewController, UITableViewDelegate, UITable
         
         
         cell.selectionStyle = .none // to prevent cells from being "highlighted"
+        
+        cell.backgroundColor = .clear
         
         return cell
         

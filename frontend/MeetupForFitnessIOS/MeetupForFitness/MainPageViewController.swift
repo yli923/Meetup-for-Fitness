@@ -13,9 +13,19 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
 
     @IBOutlet weak var tableView: UITableView!
     
+    let kCloseCellHeight: CGFloat = 179
+    let kOpenCellHeight: CGFloat = 415
+    
+    let kRowsCount = 10
+    
+    var cellHeights = [CGFloat]()
+    
     var allActivities = [Activity]()
     var shownActivities = [Activity]()
     var userId:Int!
+    
+    @IBOutlet weak var popularOrNearbySegmentControl: UISegmentedControl!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -23,6 +33,8 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
         self.tableView.delegate = self
         self.tableView.dataSource = self
         // Do any additional setup after loading the view.
+        createCellHeightsArray()
+         self.tableView.backgroundView = UIImageView(image: UIImage(named: "backgroundIamge"))
         userId = UserDefaults.standard.integer(forKey: "currentUserId")
     }
     
@@ -30,6 +42,29 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
         super.viewWillAppear(animated)
         
         self.downloadActivities()
+    }
+    
+    
+    @IBAction func switchToPopularOrNearby(_ sender: Any) {
+        switch popularOrNearbySegmentControl.selectedSegmentIndex {
+        case 0:
+            self.shownActivities = self.allActivities
+            self.tableView.reloadData()
+        case 1:
+            presentPopularActivities()
+        default:
+            break
+        }
+    }
+    
+    func presentPopularActivities() {
+        self.shownActivities.removeAll()
+        for activity in allActivities {
+            if activity.getAttendedAmount() >= activity.maxAttendance / 2 {
+                self.shownActivities.append(activity)
+            }
+        }
+        self.tableView.reloadData()
     }
 
     func downloadActivities() {
@@ -64,15 +99,13 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
                             teamId = -1
                             teamName = ""
                         } else {
-                            if teamNameArr != nil {
+                            if teamNameArr != nil && (teamNameArr?.count)! > 0 {
                                 teamName = teamNameArr!.first
                             } else {
                                 teamName = "Unknown"
                             }
                         }
-                        
                         let newActivity = Activity(name: activityName, sportsType: sportsType!, teamName: teamName!, username: username!, info: info, aid: aid, postTime: postTime, activityTime: activityTime, userId: userId, teamId: teamId!, maxAttendance: maxAttendance, attendedIds: attendedIds, location: location)
-                        
                         self.allActivities.append(newActivity)
                         
                     }
@@ -83,7 +116,7 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
                         self.shownActivities = self.allActivities
                         self.tableView.reloadData()
                     })
-                }
+                 }
             case .failure(let error):
                 print(error)
                 if let httpResponse = response.response {
@@ -163,61 +196,70 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
         self.sendAlart(info: info)
     }
     
-    //Mark: Table view delegate
-    
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+    // MARK: configure
+    func createCellHeightsArray() {
+        for _ in 0...kRowsCount {
+            cellHeights.append(kCloseCellHeight)
+        }
     }
+    
+    // MARK: - Table view data source
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return shownActivities.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cellIdentifier = "mainActivityCell"
-        let cell: UITableViewCell = self.tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         
-        let currentActivity = self.shownActivities[indexPath.row]
+        guard case let cell as DemoCell = cell else {
+            return
+        }
         
-        let activityNameLabel = cell.contentView.viewWithTag(1) as! UILabel
-        let sportTypeLabel = cell.contentView.viewWithTag(2) as! UILabel
-        let ownerLabel = cell.contentView.viewWithTag(3) as! UILabel
-        let activityTimeLabel = cell.contentView.viewWithTag(4) as! UILabel
-        let locationLabel = cell.contentView.viewWithTag(5) as! UILabel
-        let attendanceLabel = cell.contentView.viewWithTag(6) as! UILabel
-        let attendButton = cell.contentView.viewWithTag(7) as! AttendButton
-        let postTimeLabel = cell.contentView.viewWithTag(8) as! UILabel
+        cell.backgroundColor = UIColor.clear
         
-        activityNameLabel.text = currentActivity.name
-        sportTypeLabel.text = currentActivity.sportsType
-        ownerLabel.text = "By: \(currentActivity.getOwnerName())"
-        
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "EEE, dd LLL yyyy HH:mm:ss z"
-        
-        let activityTime = dateFormatter.date(from: currentActivity.activityTime)
-        let postTime = dateFormatter.date(from: currentActivity.postTime)
-        
-        dateFormatter.dateStyle = .medium
-        dateFormatter.timeStyle = .short
-        activityTimeLabel.text = dateFormatter.string(from: activityTime!)
-        postTimeLabel.text = "Post at: \(dateFormatter.string(from: postTime!))"
-        
-        locationLabel.text = currentActivity.location
-        attendanceLabel.text = "\(currentActivity.getAttendedAmount())/\(currentActivity.maxAttendance!)"
-        
-        if currentActivity.hasAttended(uid: self.userId) {
-            attendButton.setTitle("Attended", for: .normal)
-            attendButton.backgroundColor = .green
-            attendButton.isEnabled = false
+        if cellHeights[(indexPath as NSIndexPath).row] == kCloseCellHeight {
+            cell.selectedAnimation(false, animated: false, completion:nil)
         } else {
-            if currentActivity.isFull() {
-                attendButton.setTitle("Full", for: .normal)
-                attendButton.backgroundColor = .red
-                attendButton.isEnabled = false
+            cell.selectedAnimation(true, animated: false, completion: nil)
+        }
+        
+        let currentActivity = shownActivities[indexPath.row]
+        
+        cell.aid = currentActivity.aid
+        cell.activityName = currentActivity.name
+        cell.sportsType = currentActivity.sportsType
+        cell.info = currentActivity.info
+        cell.maxAttendance = currentActivity.maxAttendance
+        cell.ownerName = currentActivity.getOwnerName()
+        cell.location = currentActivity.location
+        cell.attended = currentActivity.getAttendedAmount()
+        
+        let isPersonalOrTeamLabel = cell.contentView.viewWithTag(4) as! UILabel
+        let organizorLabel = cell.contentView.viewWithTag(5) as! UILabel
+        if currentActivity.isPersonal() {
+            isPersonalOrTeamLabel.text = "Personal"
+            organizorLabel.text = "Organizor"
+            cell.contentView.viewWithTag(6)?.isHidden = true
+        } else {
+            isPersonalOrTeamLabel.text = "Team"
+            organizorLabel.text = "Leading team"
+            cell.contentView.viewWithTag(6)?.isHidden = false
+            let leaderLabel = cell.contentView.viewWithTag(6) as! UILabel
+            leaderLabel.text = "led by \(currentActivity.username!)"
+        }
+        
+        let attendButton = cell.contentView.viewWithTag(7) as! AttendButton
+        attendButton.isHidden = true
+        
+        if currentActivity.isFull() {
+            cell.status = "Full"
+        } else {
+            if currentActivity.hasAttended(uid: userId) {
+                cell.status = "Attended"
             } else {
+                cell.status = "Can attend"
+                attendButton.isHidden = false
                 attendButton.setTitle("Attend", for: .normal)
-                attendButton.backgroundColor = .blue
                 attendButton.isEnabled = true
                 attendButton.addTarget(self, action: #selector(self.attendActivity(_:)), for: .touchUpInside)
                 attendButton.aid = currentActivity.aid!
@@ -225,11 +267,137 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
             }
         }
         
-        cell.selectionStyle = .none // to prevent cells from being "highlighted"
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEE, dd LLL yyyy HH:mm:ss z"
         
-        return cell
+        let postTime = dateFormatter.date(from: currentActivity.postTime)
+        let activityTime = dateFormatter.date(from: currentActivity.activityTime)
+        
+        dateFormatter.dateStyle = .medium
+        dateFormatter.timeStyle = .none
+        cell.postDate = dateFormatter.string(from: postTime!)
+        cell.activityDate = dateFormatter.string(from: activityTime!)
+        
+        dateFormatter.dateStyle = .none
+        dateFormatter.timeStyle = .short
+        cell.postTime = dateFormatter.string(from: postTime!)
+        cell.activityTime = dateFormatter.string(from: activityTime!)
+        
+        
+        cell.sportImage = currentActivity.sportsType
         
     }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "FoldingCell", for: indexPath)
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return cellHeights[(indexPath as NSIndexPath).row]
+    }
+    
+    // MARK: Table vie delegate
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        let cell = tableView.cellForRow(at: indexPath) as! FoldingCell
+        
+        if cell.isAnimating() {
+            return
+        }
+        
+        var duration = 0.0
+        if cellHeights[(indexPath as NSIndexPath).row] == kCloseCellHeight { // open cell
+            cellHeights[(indexPath as NSIndexPath).row] = kOpenCellHeight
+            cell.selectedAnimation(true, animated: true, completion: nil)
+            duration = 0.5
+        } else {// close cell
+            cellHeights[(indexPath as NSIndexPath).row] = kCloseCellHeight
+            cell.selectedAnimation(false, animated: true, completion: nil)
+            duration = 0.8
+        }
+        
+        UIView.animate(withDuration: duration, delay: 0, options: .curveEaseOut, animations: { () -> Void in
+            tableView.beginUpdates()
+            tableView.endUpdates()
+        }, completion: nil)
+        
+        
+    }
+    
+//    
+//    
+//    //Mark: Table view delegate
+//    
+//    
+//    
+//    func numberOfSections(in tableView: UITableView) -> Int {
+//        return 1
+//    }
+//    
+//    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+//        return shownActivities.count
+//    }
+//    
+//    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+//        let cellIdentifier = "mainActivityCell"
+//        let cell: UITableViewCell = self.tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
+//        
+//        let currentActivity = self.shownActivities[indexPath.row]
+//        
+//        let activityNameLabel = cell.contentView.viewWithTag(1) as! UILabel
+//        let sportTypeLabel = cell.contentView.viewWithTag(2) as! UILabel
+//        let ownerLabel = cell.contentView.viewWithTag(3) as! UILabel
+//        let activityTimeLabel = cell.contentView.viewWithTag(4) as! UILabel
+//        let locationLabel = cell.contentView.viewWithTag(5) as! UILabel
+//        let attendanceLabel = cell.contentView.viewWithTag(6) as! UILabel
+//        let attendButton = cell.contentView.viewWithTag(7) as! AttendButton
+//        let postTimeLabel = cell.contentView.viewWithTag(8) as! UILabel
+//        
+//        activityNameLabel.text = currentActivity.name
+//        sportTypeLabel.text = currentActivity.sportsType
+//        ownerLabel.text = "By: \(currentActivity.getOwnerName())"
+//        
+//        let dateFormatter = DateFormatter()
+//        dateFormatter.dateFormat = "EEE, dd LLL yyyy HH:mm:ss z"
+//        
+//        let activityTime = dateFormatter.date(from: currentActivity.activityTime)
+//        let postTime = dateFormatter.date(from: currentActivity.postTime)
+//        
+//        dateFormatter.dateStyle = .medium
+//        dateFormatter.timeStyle = .short
+//        activityTimeLabel.text = dateFormatter.string(from: activityTime!)
+//        postTimeLabel.text = "Post at: \(dateFormatter.string(from: postTime!))"
+//        
+//        locationLabel.text = currentActivity.location
+//        attendanceLabel.text = "\(currentActivity.getAttendedAmount())/\(currentActivity.maxAttendance!)"
+//        
+//        if currentActivity.hasAttended(uid: self.userId) {
+//            attendButton.setTitle("Attended", for: .normal)
+//            attendButton.backgroundColor = .green
+//            attendButton.isEnabled = false
+//        } else {
+//            if currentActivity.isFull() {
+//                attendButton.setTitle("Full", for: .normal)
+//                attendButton.backgroundColor = .red
+//                attendButton.isEnabled = false
+//            } else {
+//                attendButton.setTitle("Attend", for: .normal)
+//                attendButton.backgroundColor = .blue
+//                attendButton.isEnabled = true
+//                attendButton.addTarget(self, action: #selector(self.attendActivity(_:)), for: .touchUpInside)
+//                attendButton.aid = currentActivity.aid!
+//                attendButton.indexPath = indexPath.row
+//            }
+//        }
+//        
+//        cell.selectionStyle = .none // to prevent cells from being "highlighted"
+//        
+//        return cell
+//        
+//    }
     
     
     

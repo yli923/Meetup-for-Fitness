@@ -10,7 +10,11 @@ import UIKit
 import MapKit
 import Alamofire
 
-class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
+class AddressUIButton: UIButton {
+    var address: String?
+}
+
+class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, MKMapViewDelegate {
     var activityName:String!
     var teamId:Int!
     var teamName:String!
@@ -35,8 +39,11 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
         friendListTableView.delegate = self
         friendListTableView.dataSource = self
+        self.friendListTableView.backgroundColor = .clear
+        mapView.delegate = self
         
         maximumAttendanceField.delegate = self
         acitivtyLocationField.delegate = self
@@ -122,7 +129,9 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
                     let annotation = MKPointAnnotation()
                     annotation.coordinate = item.placemark.coordinate
                     annotation.title = item.name
-                    self.mapView.addAnnotation(annotation)
+                    annotation.subtitle = item.phoneNumber
+                    let pinAnnotationView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: String(annotation.hash))
+                    self.mapView.addAnnotation(pinAnnotationView.annotation!)
                     
                     //zoom in here
                     self.mapView.showAnnotations(self.mapView.annotations, animated: true)
@@ -186,6 +195,10 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
         self.sendAlart(info: info)
     }
     
+    func changeAddress(sender: AddressUIButton) {
+        acitivtyLocationField.text = sender.address
+    }
+    
     //Mark: Table view delegate
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -200,11 +213,13 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
         let cellIdentifier = "friendListCell"
         let cell: UITableViewCell = friendListTableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath)
         let friendNameLabel = cell.contentView.viewWithTag(1) as! UILabel
+        friendNameLabel.textColor = .white
         friendNameLabel.text = friendData[indexPath.row].1
         
         cell.accessoryType = cell.isSelected ? .checkmark : .none
         cell.selectionStyle = .none // to prevent cells from being "highlighted"
         
+        cell.backgroundColor = .clear
         return cell
         
     }
@@ -220,6 +235,27 @@ class AddActivitySecondViewController: UIViewController, UITableViewDelegate, UI
         let friend = friendData[indexPath.row]
         friendsInvitedIds.remove(at: friendsInvitedIds.index(of: friend.0)!)
         tableView.cellForRow(at: indexPath)?.accessoryType = .none
+    }
+    
+    //Mark: Mapview delegate
+    
+    func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+        if !(annotation is MKUserLocation) {
+            let pinView = MKPinAnnotationView(annotation: annotation, reuseIdentifier: String(annotation.hash))
+            
+            let rightButton = AddressUIButton(type: .contactAdd)
+            rightButton.address = annotation.title!
+            rightButton.addTarget(self, action: #selector(changeAddress), for: .touchUpInside)
+            
+            pinView.animatesDrop = true
+            pinView.canShowCallout = true
+            pinView.rightCalloutAccessoryView = rightButton
+            
+            return pinView
+        }
+        else {
+            return nil
+        }
     }
     
     
