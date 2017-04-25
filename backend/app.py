@@ -239,6 +239,8 @@ def get_user_invite(userId):
 		aList = [item[0] for item in cursor.fetchall()]
 		for a in aList:
 			aCur = db.cursor()
+			aCur.execute("SELECT teamId From Activity WHERE aid = '%s'"%a)
+			teamId = aCur.fetchall()[0]
 			aCur.execute("SELECT userId FROM AttendActivity WHERE aid = %s AND userId = %s",[a,userId])
 			if aCur.rowcount == 0:
 				aCur.execute("SELECT maxPeople,attended From Activity WHERE aid = '%s'"%a)
@@ -248,11 +250,11 @@ def get_user_invite(userId):
 				if attended < maxPeople:
 					inviteList.append(a)
 				else:
-					aCur.execute("DELETE FROM FriendInvite WHERE aid = %s AND friendId = %s",[a,userId])
+					aCur.execute("DELETE FROM FriendInvite WHERE aid = %s AND friendId = %s AND teamId = %s",[a,userId,teamId])
 					db.commit()
 					
 			else:
-				aCur.execute("DELETE FROM FriendInvite WHERE aid = %s AND friendId = %s",[a,userId])
+				aCur.execute("DELETE FROM FriendInvite WHERE aid = %s AND friendId = %s AND teamId = %s",[a,userId,teamId])
 				db.commit()
 		db.close()
 		return jsonify({'Activities Invited':inviteList})
@@ -308,10 +310,10 @@ def add_activity(userId):
 		cursor.execute("INSERT INTO Activity(userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,attended) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", \
 			[userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,0])
 		aid = cursor.lastrowid
-		cursor.execute("INSERT INTO FriendInvite(aid,friendId) values (%s,%s)",[aid,userId])
+		cursor.execute("INSERT INTO FriendInvite(aid,friendId,teamId) values (%s,%s,%s)",[aid,userId,teamId])
 		for friend in friendList:
 			friendCur = db.cursor()
-			friendCur.execute("INSERT INTO FriendInvite(aid,friendId) values (%s,%s)",[aid,friend])
+			friendCur.execute("INSERT INTO FriendInvite(aid,friendId,teamId) values (%s,%s,%s)",[aid,friend,teamId])
 		db.commit()
 		db.close()
 		return("success")
@@ -532,7 +534,7 @@ def add_notification():
 	db = mysql.connect()
 	cursor = db.cursor()
 	try:
-		cursor.execute("SELECT * FROM Notification WHERE senderId = %s AND receiverId = %s",[senderId,receiverId])
+		cursor.execute("SELECT * FROM Notification WHERE senderId = %s AND receiverId = %s AND teamId = %s",[senderId,receiverId,teamId])
 		if cursor.rowcount == 0:
 			cursor.execute("INSERT INTO Notification(senderId,receiverId,teamId,postTime) values(%s,%s,%s,%s)",[senderId,receiverId,teamId,postTime])
 			ntfyId = cursor.lastrowid
