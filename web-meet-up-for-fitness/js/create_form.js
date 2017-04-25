@@ -29,8 +29,7 @@
             select_id.appendChild(option_fragment);
         },
         error: function(xhr, txtstatus, errorthrown) {
-             console.log(xhr);
-             console.log(txtstatus);
+
         }
     });
 
@@ -50,80 +49,68 @@
             invalid: 'glyphicon glyphicon-remove',
             validating: 'glyphicon glyphicon-refresh'
         },
-        fields: {
-            first_name: {
-                validators: {
-                        stringLength: {
-                        min: 2,
-                    },
-                        notEmpty: {
-                        message: 'Please supply your first name'
-                    }
-                }
-            },
-             last_name: {
-                validators: {
-                     stringLength: {
-                        min: 2,
-                    },
-                    notEmpty: {
-                        message: 'Please supply your last name'
-                    }
-                }
-            },
-            activity_name: {
-                validators: {
-                    notEmpty: {
-                        message: 'Please supply your activity name '
-                    }
-                }
-            },
-            sports: {
-                validators: {
-                    notEmpty: {
-                        message: 'Please supply your sports type '
-                    }
-                }
-            },
-            people: {
-                validators: {
-                    notEmpty: {
-                        message: 'Please supply your number of people you '
-                    }
-                }
-            },
-            phone: {
-                validators: {
-                    notEmpty: {
-                        message: 'Please supply your phone number'
-                    },
-                    phone: {
-                        country: 'US',
-                        message: 'Please supply a vaild phone number with area code'
-                    }
-                }
-            },
-            address: {
-                validators: {
-                    notEmpty: {
-                        message: 'Please supply your address'
-                    }
-                }
-            },
-            comment: {
-                validators: {
+      fields: {
+          first_name: {
+              validators: {
                       stringLength: {
-                        min: 10,
-                        max: 200,
-                        message:'Please enter at least 10 characters and no more than 200'
-                    },
-                    notEmpty: {
-                        message: 'Please supply a description of your project'
-                    }
-                    }
-                }
-            }
-        })
+                      min: 2,
+                  },
+                      notEmpty: {
+                      message: 'Please supply your first name'
+                  }
+              }
+          },
+           state: {
+              validators: {
+
+                  notEmpty: {
+                      message: 'Please suupply the sports type'
+                  }
+              }
+          },
+          activity_name: {
+              validators: {
+                  notEmpty: {
+                      message: 'Please supply your activity name '
+                  }
+              }
+          },
+
+          people: {
+              validators: {
+                  notEmpty: {
+                      message: 'Please supply the maximum number of people of this activity'
+                  }
+              }
+          },
+          timefield: {
+              validators: {
+                  notEmpty: {
+                      message: 'Please supply the time you want for the activity'
+                  }
+              }
+          },
+          address: {
+              validators: {
+                  notEmpty: {
+                      message: 'Please supply your address'
+                  }
+              }
+          },
+          comment: {
+              validators: {
+                    stringLength: {
+                      min: 10,
+                      max: 200,
+                      message:'Please enter at least 10 characters and no more than 200'
+                  },
+                  notEmpty: {
+                      message: 'Please supply a description of your project'
+                  }
+                  }
+              }
+          }
+      })
         .on('success.form.bv', function(e) {
             $('#success_message').slideDown({ opacity: "show" }, "slow") // Do something ...
                 $('#contact_form').data('bootstrapValidator').resetForm();
@@ -157,17 +144,61 @@ function submit_new_activity()
             var userId = getQueryVariable("userId");
             console.log( userId );
 
+            var atime = $('#time-input').val();
+            //atime = 21 April 2017, 11:01 am
+
+            var vars = atime.split(",");
+            console.log(vars);
+
+            var date = vars[0];
+
+            console.log( "date " + date);
+
+            var time = vars[1].split(" ")[1];
+            console.log( "time" + time );
+
+            var d = new Date(date);
+
+            var days = ["Sun","Mon","Tue","Wed","Thur","Fri","Sat"];
+
+            var dayOfWeek = days[d.getDay()];
+            console.log( dayOfWeek);
+            var newTime = dayOfWeek.concat(', ', date, ' ', time, ':00 EDT' );
+
+            console.log(newTime);
+
             var formData = {
                 "aName": $('#activity_name_input').val(),
                 "sportsType": $('#sports-type option:selected').val(),
-                "aTime"   : $('#time-input').val(),
-                "friendList"  : "69",
+                "aTime"   : newTime,
+                "friendList"  : $('#se-control option:selected').val(),
                 "maxPeople": $('#maximum').val(),
                 "teamId": "-1",
-                "aInfo" : "fun game",
+                "aInfo" : $('#activity_info').val(),
                 "location" : $('#autocomplete').val()
             }    
+            
+            if($.isEmptyObject(formData["aName"]) || $.isEmptyObject(formData["sportsType"]) 
+                || $.isEmptyObject(formData["aTime"]) || $.isEmptyObject(formData["maxPeople"]) || $.isEmptyObject(formData["location"])) {
+                return false;
+            }
+            $.ajax({
+                "dataType" : "json",
+                "async": false,
+                "crossDomain": true,
+                "url": "http://@ec2-52-7-74-13.compute-1.amazonaws.com/friends/" + userId,
+                "method": "GET",
+
+                success : function(data){
+                    
+                },
+                error: function(xhr, txtstatus, errorthrown) {
+                     console.log("friend_empty");
+                     formData['friendList'] = "-1";
+                }
+            });
             console.log( JSON.stringify(formData) );
+
      
      $.ajax({
                 "data" : JSON.stringify(formData),
@@ -182,14 +213,16 @@ function submit_new_activity()
                 "processData": false,
 
                 success : function(data){
-                    console.log("success");
-                    console.log(data);
+                    window.parent.location.reload(true);
+
+                    // console.log("success");
+                    // console.log(data);
                 },
 
                 error: function(jqxhr, textStatus, errorThrown){
-                    console.log("error");
-                    console.log(textStatus);
-                    console.log(errorThrown);
+                    // console.log("error");
+                    // console.log(textStatus);
+                    // console.log(errorThrown);
 
                 }
         });

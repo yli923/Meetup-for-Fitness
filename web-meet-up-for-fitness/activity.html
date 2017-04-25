@@ -160,8 +160,7 @@
 				<p><b>Activity Time: </b><%=aTime%></p>
 				<p><b>Location: </b><%=location%></p>
 				<p><b>People Attended: </b><%=attended.length%>/<%=maxPeople%>
-
-				<button id="join_activity" onclick="return attend_activity(\'' + userId + ',' + aid + '\')">Attend</button>
+				<button id="join_activity" onclick="return attend_activity(<%=aid%>)">Attend</button> 
 
 			</div>
 		</div>

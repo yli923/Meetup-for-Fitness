@@ -24,10 +24,19 @@
 <fieldset>
 
 <!-- Form Name -->
-<legend align='center'>Create new activity</legend>
+<legend align='center'>Create new my activity</legend>
 
 <!-- Text input-->
 
+<div class="form-group">
+  <label class="col-md-4 control-label">Activity Info</label>  
+    <div class="col-md-4 inputGroupContainer">
+    <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-star-empty"></i></span>
+  <input id= "activity_info" name="activity_info" placeholder="fun game" class="form-control" type="text">
+    </div>
+  </div>
+</div>
 
 <div class="form-group">
   <label class="col-md-4 control-label">Activity Name</label>  
@@ -55,14 +64,16 @@
   </div>
 </div>
 
+
+
 <div class="form-group">
   <label class="col-md-4 control-label">Time</label>  
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                <div id='time-se' class="input-append date form_datetime" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                <div id='time-se' class="input-append date form_datetime" data-date-format="dd MM yyyy, hh:ii p" data-link-field="dtp_input1">
 
-                      <input class='form-control' id='time-input' type="text" value="" placeholder="Please select the time of the activity">
+                      <input name = 'timefield' class='form-control' id='time-input' type="text" value="" placeholder="Please select the time of the activity">
                       <span class="add-on"><i class="icon-remove"></i></span>
                       <span class="add-on"><i class="icon-th"></i></span>
                 </div>
@@ -89,7 +100,7 @@
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-plus-sign"></i></span>
-  <input id="maximum"name="people" placeholder="5" class="form-control" type="text">
+  <input id="maximum" name="people" placeholder="5" class="form-control" type="text">
     </div>
   </div>
 </div>
@@ -188,7 +199,7 @@ function geolocate() {
 
 <script type="text/javascript">
     $('.form_datetime').datetimepicker({
-        //language:  'fr',
+
         weekStart: 1,
         todayBtn:  1,
     autoclose: 1,
