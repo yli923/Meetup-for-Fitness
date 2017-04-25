@@ -24,13 +24,21 @@
 <fieldset>
 
 <!-- Form Name -->
-<legend align='center'>Create new activity</legend>
+<legend align='center'>Create new team activity</legend>
 
 <!-- Text input-->
 
-
 <div class="form-group">
-  <label class="col-md-4 control-label">Activity Name</label>
+  <label class="col-md-4 control-label">Activity Info</label>  
+    <div class="col-md-4 inputGroupContainer">
+    <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-star-empty"></i></span>
+  <input id= "activity_info" name="activity_info" placeholder="fun game" class="form-control" type="text">
+    </div>
+  </div>
+</div>
+<div class="form-group">
+  <label class="col-md-4 control-label">Activity Name</label>  
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-hand-up"></i></span>
@@ -40,7 +48,7 @@
 </div>
 
 <div class="form-group">
-  <label class="col-md-4 control-label">Related Sports</label>
+  <label class="col-md-4 control-label">Related Sports</label>  
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-tasks"></i></span>
@@ -50,19 +58,22 @@
           <option>basketball</option>
           <option>soccer</option>
           <option>table tennis</option>
-         </select>
+         </select>    
     </div>
   </div>
 </div>
 
+
+
+
 <div class="form-group">
-  <label class="col-md-4 control-label">Time</label>
+  <label class="col-md-4 control-label">Time</label>  
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
-                <div id='time-se' class="input-append date form_datetime" data-date="2017-03-29T05:25:07Z" data-date-format="dd MM yyyy - HH:ii p" data-link-field="dtp_input1">
+                <div id='time-se' class="input-append date form_datetime" data-date-format="dd MM yyyy, hh:ii p" data-link-field="dtp_input1">
 
-                      <input class='form-control' id='time-input' type="text" value="" placeholder="Please select the time of the activity">
+                      <input name = 'timefield' class='form-control' id='time-input' type="text" value="" placeholder="Please select the time of the activity">
                       <span class="add-on"><i class="icon-remove"></i></span>
                       <span class="add-on"><i class="icon-th"></i></span>
                 </div>
@@ -72,28 +83,16 @@
 </div>
 
 <div class="form-group">
-  <label class="col-md-4 control-label">Friends Invited</label>
+  <label class="col-md-4 control-label">Friends Invited</label>  
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-          <select id='friend_name' name="friends" class="form-control selectpicker" >
+          <select id='se-control' name="friends" class="form-control selectpicker" >
           <option value=" " >Please select friends you want to go with</option>
-         </select>
+         </select>  
     </div>
   </div>
 </div>
-
-
-<div class="form-group">
-  <label class="col-md-4 control-label">Maximum Attendance</label>
-    <div class="col-md-4 inputGroupContainer">
-    <div class="input-group">
-        <span class="input-group-addon"><i class="glyphicon glyphicon-plus-sign"></i></span>
-  <input id="maximum"name="people" placeholder="5" class="form-control" type="text">
-    </div>
-  </div>
-</div>
-
 
 <div class="form-group">
   <label class="col-md-4 control-label">Team Invitation</label>
@@ -107,10 +106,21 @@
   </div>
 </div>
 
-<!-- Text input-->
 
 <div class="form-group">
-  <label class="col-md-4 control-label">Activity Location</label>
+  <label class="col-md-4 control-label">Maximum Attendance</label>  
+    <div class="col-md-4 inputGroupContainer">
+    <div class="input-group">
+        <span class="input-group-addon"><i class="glyphicon glyphicon-plus-sign"></i></span>
+  <input id="maximum" name="people" placeholder="5" class="form-control" type="text">
+    </div>
+  </div>
+</div>
+
+<!-- Text input-->
+      
+<div class="form-group">
+  <label class="col-md-4 control-label">Activity Location</label>  
     <div class="col-md-4 inputGroupContainer">
     <div class="input-group">
         <span class="input-group-addon"><i class="glyphicon glyphicon-home"></i></span>
@@ -119,6 +129,10 @@
     <div id="map"></div>
   </div>
 </div>
+
+
+<!-- Text input-->
+
 
 <!--
     <input id="pac-input" class="controls" type="text" placeholder="Search Box">
@@ -201,7 +215,6 @@ function geolocate() {
 
 <script type="text/javascript">
     $('.form_datetime').datetimepicker({
-        //language:  'fr',
         weekStart: 1,
         todayBtn:  1,
         autoclose: 1,
@@ -214,100 +227,7 @@ function geolocate() {
 
 </script>
 
-<script>
-    function getQueryVariable(variable)
-    {
-       var query = window.location.search.substring(1);
-       var vars = query.split("&");
-       for (var i=0;i<vars.length;i++) {
-               var pair = vars[i].split("=");
-               if(pair[0] == variable){return pair[1];}
-       }
-       return(false);
-    }
-    var userID = getQueryVariable("userId");
-    var result;
-     $.ajax({
-               "dataType": "json",
-                "async": false,
-                "crossDomain": true,
-                "url": "http://@ec2-52-7-74-13.compute-1.amazonaws.com/teams/" + userID,
-                "method": "GET",
-                "headers": {
-                    "content-type": "application/json",
-                },
-                "processData": false,
-                success: function(data){
-                    result = data;
-                },
 
-                error: function(jqxhr, textStatus, errorThrown){
-                    console.log("error");
-                    console.log(textStatus);
-                    console.log(errorThrown);
-
-                }
-        });
-
-        var x = document.getElementById("team_name");
-        var option;
-        for (var i = 0; i < result['Team List'].length; i++)
-        {
-          option = document.createElement("OPTION");
-          option.text = result['Team List'][i]['teamId'];
-          x.add(option);
-        }
-
-
-</script>
-
-
-<script>
-        function getQueryVariable(variable)
-    {
-       var query = window.location.search.substring(1);
-       var vars = query.split("&");
-       for (var i=0;i<vars.length;i++) {
-               var pair = vars[i].split("=");
-               if(pair[0] == variable){return pair[1];}
-       }
-       return(false);
-    }
-    var userID = getQueryVariable("userId");
-    var result;
-     $.ajax({
-               "dataType": "json",
-                "async": false,
-                "crossDomain": true,
-                "url": "http://@ec2-52-7-74-13.compute-1.amazonaws.com/friends/" + userID,
-                "method": "GET",
-                "headers": {
-                    "content-type": "application/json",
-                },
-                "processData": false,
-                success: function(data){
-                    result = data;
-                },
-
-                error: function(jqxhr, textStatus, errorThrown){
-                    console.log("error");
-                    console.log(textStatus);
-                    console.log(errorThrown);
-
-                }
-        });
-
-        var x = document.getElementById("friend_name");
-        var option;
-        for (var i = 0; i < result['Friends List'].length; i++)
-        {
-          option = document.createElement("OPTION");
-          option.text =result['Friends List'][0]['userId'];
-          x.add(option);
-        }
-
-
-</script>
 
 
     <script src="js/create_team_activity.js"></script>

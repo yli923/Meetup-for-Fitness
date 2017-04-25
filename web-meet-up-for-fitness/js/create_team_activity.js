@@ -1,6 +1,72 @@
 $(document).ready(function() {
   document.getElementById ("submit_activity_id").addEventListener ("click", submit_new_activity, false);
 
+    var select_id = document.getElementById("se-control");
+    var option_fragment = document.createDocumentFragment();
+    var userId = getQueryVariable("userId");
+    var url_addr = "http://@ec2-52-7-74-13.compute-1.amazonaws.com/friends/" + userId;
+
+    console.log('friends');
+    $.ajax({
+        "dataType" : "json",
+        "async": false,
+        "crossDomain": true,
+        "url": url_addr,
+        "method": "GET",
+
+        success : function(data){
+            //拿到数据
+            console.log(data);
+            console.log(data["Friends List"].length);
+            var friends_array = data["Friends List"];
+            var friens_num = friends_array.length;
+
+            for (var i = 0; i < friens_num; i++) {
+                var option = document.createElement('option');
+                option.value = i;
+                option.appendChild(document.createTextNode( friends_array[i]['username']));
+                option_fragment.appendChild(option);
+            }
+            select_id.appendChild(option_fragment);
+        },
+        error: function(xhr, txtstatus, errorthrown) {
+             console.log(xhr);
+             console.log(txtstatus);
+        }
+    });
+
+    var team_list = document.getElementById("team_name");
+    var team_fragment = document.createDocumentFragment();
+    var url_addr = "http://@ec2-52-7-74-13.compute-1.amazonaws.com/teams/" + userId;
+
+    $.ajax({
+        "dataType" : "json",
+        "async": false,
+        "crossDomain": true,
+        "url": url_addr,
+        "method": "GET",
+
+        success : function(data){
+            //拿到数据
+            console.log(data);
+            console.log(data["Team List"].length);
+            var teams_array = data["Team List"];
+            var teams_num = teams_array.length;
+
+            for (var i = 0; i < teams_num; i++) {
+                var team_option = document.createElement('option');
+                team_option.value = i;
+                team_option.appendChild(document.createTextNode( teams_array[i]['tname']));
+                team_fragment.appendChild(team_option);
+            }
+            team_list.appendChild(team_fragment);
+        },
+        error: function(xhr, txtstatus, errorthrown) {
+             console.log(xhr);
+             console.log(txtstatus);
+        }
+    });
+
   $('#contact_form').bootstrapValidator({
       // To use feedback icons, ensure that you use Bootstrap v3.1.0 or later
       feedbackIcons: {
@@ -19,13 +85,11 @@ $(document).ready(function() {
                   }
               }
           },
-           last_name: {
+           state: {
               validators: {
-                   stringLength: {
-                      min: 2,
-                  },
+
                   notEmpty: {
-                      message: 'Please supply your last name'
+                      message: 'Please suupply the sports type'
                   }
               }
           },
@@ -36,28 +100,18 @@ $(document).ready(function() {
                   }
               }
           },
-          sports: {
-              validators: {
-                  notEmpty: {
-                      message: 'Please supply your sports type '
-                  }
-              }
-          },
+
           people: {
               validators: {
                   notEmpty: {
-                      message: 'Please supply your number of people you '
+                      message: 'Please supply the maximum number of people of this activity'
                   }
               }
           },
-          phone: {
+          timefield: {
               validators: {
                   notEmpty: {
-                      message: 'Please supply your phone number'
-                  },
-                  phone: {
-                      country: 'US',
-                      message: 'Please supply a vaild phone number with area code'
+                      message: 'Please supply the time you want for the activity'
                   }
               }
           },
@@ -114,43 +168,100 @@ function submit_new_activity()
 {
           var userId = getQueryVariable("userId");
 
+            var atime = $('#time-input').val();
+            //atime = 21 April 2017, 11:01 am
+
+            var vars = atime.split(",");
+
+            var date = vars[0];
+
+
+            var time = vars[1].split(" ")[1];
+
+            var d = new Date(date);
+
+            var days = ["Sun","Mon","Tue","Wed","Thur","Fri","Sat"];
+
+            var dayOfWeek = days[d.getDay()];
+            var newTime = dayOfWeek.concat(', ', date, ' ', time, ':00 EDT' );
+
+
+            console.log(newTime);
+            
           var formData = {
-              "userId": userId,
               "aName": $('#activity_name_input').val(),
               "sportsType": $('#sports-type option:selected').val(),
-              "aTime"   : $('#time-input').val(),
-              "friendList"  : $('#friend_name').val()
+              "aTime"   : newTime,
+              "friendList"  : $('#se-control option:selected').val(),
               "maxPeople": $('#maximum').val(),
-              "teamId": $('#team_name').val(),
-              "aInfo" : "fun gamdde",
+              "teamId": $('#team_name option:selected').val(),
+              "aInfo" : $('#activity_info').val(),
               "location" : $('#autocomplete').val()
           }
-          console.log( JSON.stringify(formData) );
+              if($.isEmptyObject(formData["aName"]) || $.isEmptyObject(formData["sportsType"]) 
+                || $.isEmptyObject(formData["aTime"])
+                || $.isEmptyObject(formData["maxPeople"]) || $.isEmptyObject(formData["location"])) {
+                return false;
+            }
+            $.ajax({
+                "dataType" : "json",
+                "async": false,
+                "crossDomain": true,
+                "url": "http://@ec2-52-7-74-13.compute-1.amazonaws.com/friends/" + userId,
+                "method": "GET",
 
-   $.ajax({
-              "data" : JSON.stringify(formData),
-              "async": false,
-              "crossDomain": true,
-              "url": "http://@ec2-52-7-74-13.compute-1.amazonaws.com/activity/add/allInfo/" + userId,
-              "method": "POST",
-              "headers": {
-                  "content-type": "application/json; charset=utf-8",
-              },
+                success : function(data){
+                    
+                },
+                error: function(xhr, txtstatus, errorthrown) {
+                     console.log("friend_empty");
+                     formData['friendList'] = "-1";
+                }
+            });
+                   
+            $.ajax({
+                "dataType" : "json",
+                "async": false,
+                "crossDomain": true,
+                "url": "http://@ec2-52-7-74-13.compute-1.amazonaws.com/teams/" + userId,
+                "method": "GET",
 
-              "processData": false,
+                success : function(data){
+                    
+                },
+                error: function(xhr, txtstatus, errorthrown) {
+                     console.log("team empty");
+                     formData['teamId'] = "-1";
+                }
+            }); 
+            console.log( JSON.stringify(formData) );
 
-              success : function(data){
-                  console.log("success");
-                  console.log(data);
-              },
+           $.ajax({
+                      "data" : JSON.stringify(formData),
+                      "async": false,
+                      "crossDomain": true,
+                      "url": "http://@ec2-52-7-74-13.compute-1.amazonaws.com/activity/add/allInfo/" + userId,
+                      "method": "POST",
+                      "headers": {
+                          "content-type": "application/json; charset=utf-8",
+                      },
 
-              error: function(jqxhr, textStatus, errorThrown){
-                  console.log("error");
-                  console.log(textStatus);
-                  console.log(errorThrown);
+                      "processData": false,
 
-              }
-      });
-  return false;
+                      success : function(data){
+                          window.parent.location.reload(true);
+
+                          // console.log("success");
+                          // console.log(data);
+                      },
+
+                      error: function(jqxhr, textStatus, errorThrown){
+                          // console.log("error");
+                          // console.log(textStatus);
+                          // console.log(errorThrown);
+
+                      }
+              });
+          return false;
 
 }

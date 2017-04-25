@@ -44,88 +44,62 @@ function get_my_activity_waterfall(userId) {
         });
 }
 function getJSONandRender(page, initial, userId){
-            if(initial == 1) {
-                var url_addr = "http://ec2-52-7-74-13.compute-1.amazonaws.com/activity";
-            }
-            else {
-                var url_addr = "http://ec2-52-7-74-13.compute-1.amazonaws.com/activity/" + userId;
-                console.log( 'made it!');
-            }
-
-            var $waterfall = $("#waterfall");
-            //模板字符串
-            var templateString = $("#template").html();
-
-            //数据绑定函数
-            var compileFunction = _.template(templateString);
-
-            //三列瀑布流，每列的总高度
-            var colHeight = [0,0,0];
-
-            //发出jsonp请求
-            $.ajax({
-                "dataType" : "json",
-                "async": true,
-                "crossDomain": true,
-                "url": url_addr,
-                "method": "GET",
-
-                "success" : function(data){
-                    //拿到数据
-                    var dataArray = data.activities;
-                    console.log(dataArray);
-                    if(dataArray.length == 0){
-                        return;
-                    }
-                    lock = true;
-
-                    //遍历数据
-                    $.each(dataArray,function(index, dictionary){
-                        //add image
-                        var image = new Image();
-                            image.src = "../img/sports.jpg";
-                        console.log(dataArray[index]);
-
-                        // var info = document.getElementById("activity_btn");
-                        // var buttonnode= document.createElement('button');
-                        // buttonnode.setAttribute('value','Attend');
-
-                        // info.appendChild(buttonnode);
-                        //模板修正
-                        $(image).load(function(){
-                            //这张图片加载成功
-                            var domString = compileFunction(dictionary);
-                            //转jq
-                            $grid = $(domString);
-                            //上DOM
-                            $waterfall.append($grid);
-
-                            //根据瀑布流算法，设置它的left、top
-                            minValue = _.min(colHeight);
-                            minIndex = _.indexOf(colHeight,minValue);
-                            $grid.css({
-                                "top" : minValue,
-                                "left" : minIndex * 250
-                            });
-
-                            //改变总列高数组的值
-                            colHeight[minIndex] += $grid.outerHeight() + 20;
-
-                            //让大盒子根据最高的列设置高度
-                            $waterfall.css("height",_.max(colHeight));
-                        });
-                    });
-                },
-                error: function(xhr, txtstatus, errorthrown) {
-                 console.log(xhr);
-                 console.log(txtstatus);
-
-                // console.log(xhr);
-                // console.log(txtstatus);
-                //console.log("\n{\n\t\"username\":\"demo\",\n\t\"password\":\"123\"\n}");
-            }
-            });
+        if(initial == 1) {
+            var url_addr = "http://ec2-52-7-74-13.compute-1.amazonaws.com/activity";
         }
+        else {
+            var url_addr = "http://ec2-52-7-74-13.compute-1.amazonaws.com/activity/" + userId;
+            console.log( 'made it!');
+        }
+
+        var $waterfall = $("#waterfall");
+        var templateString = $("#template").html();
+        var compileFunction = _.template(templateString);
+        var colHeight = [0,0,0];
+
+        $.ajax({
+            "dataType" : "json",
+            "async": true,
+            "crossDomain": true,
+            "url": url_addr,
+            "method": "GET",
+            "success" : function(data){
+                
+                var dataArray = data.activities;
+                console.log(dataArray);
+                if(dataArray.length == 0){
+                    return;
+                }
+                lock = true;
+
+                $.each(dataArray,function(index, dictionary){
+                    //add image
+                    var image = new Image();
+                        image.src = "../img/sports.jpg";
+                    // console.log(dataArray[index]);
+                    $(image).load(function(){
+                        var domString = compileFunction(dictionary);
+                        $grid = $(domString);
+                        $waterfall.append($grid);
+
+                        minValue = _.min(colHeight);
+                        minIndex = _.indexOf(colHeight,minValue);
+                        $grid.css({
+                            "top" : minValue,
+                            "left" : minIndex * 250
+                        });
+                        colHeight[minIndex] += $grid.outerHeight() + 20;
+                        $waterfall.css("height",_.max(colHeight));
+                    });
+                });
+            },
+            error: function(xhr, txtstatus, errorthrown) {
+             console.log(xhr);
+             console.log(txtstatus);
+
+            }
+        });
+    }
 function getQueryVariable(variable)
 {
        var query = window.location.search.substring(1);
@@ -171,7 +145,9 @@ function team_activity_trigger()
             }
         });
 }
-function attend_activity(userId, aid) {
+function attend_activity(aid) {
+    var userId = getQueryVariable("userId");
+
     console.log(userId);
     console.log(aid);
     var formData = {
