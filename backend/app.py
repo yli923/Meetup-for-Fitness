@@ -287,7 +287,9 @@ def attend_activity():
 
 @app.route('/activity/add/allInfo/<userId>', methods=['POST'])
 def add_activity(userId):
-	if not request.json or not 'aName' in request.json or not 'aInfo' in request.json or not 'location' in request.json or not 'aTime' in request.json or not 'sportsType' in request.json or not 'maxPeople' in request.json or not 'teamId' in request.json or not 'friendList' in request.json: 
+	if not request.json or not 'aName' in request.json or not 'aInfo' in request.json \
+	or not 'location' in request.json or not 'aTime' in request.json or not 'sportsType' in request.json \
+	or not 'maxPeople' in request.json or not 'teamId' in request.json or not 'friendList' in request.json: 
 		abort(400, '{"message":"Input parameter incorrect or missing"}')
 	aName = request.json['aName']
 	aInfo = request.json['aInfo']
@@ -303,7 +305,8 @@ def add_activity(userId):
 	cursor.execute("SELECT sportsId FROM SportsType WHERE sportsType = '%s'"%sportsType)
 	sportsId = [item[0] for item in cursor.fetchall()]
 	try:
-		cursor.execute("INSERT INTO Activity(userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,attended) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",[userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,0])
+		cursor.execute("INSERT INTO Activity(userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,attended) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", \
+			[userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,0])
 		aid = cursor.lastrowid
 		cursor.execute("INSERT INTO FriendInvite(aid,friendId) values (%s,%s)",[aid,userId])
 		for friend in friendList:
@@ -415,6 +418,11 @@ def get_user_teams(userId):
 			temp1 = {}
 			temp1["teamId"] = temp[0]
 			temp1["tname"] = temp[1]
+			teamCur.execute("SELECT tName FROM TeamInfo WHERE userId = %s AND teamId = %s",[userId,t])
+			if teamCur.rowcount == 1:
+				temp1["isLeader"] = True
+			else:
+				temp1["isLeader"] = False
 			result.append(temp1)
 		db.close()
 		return jsonify({'Team List':result})
@@ -514,7 +522,8 @@ def add_team_member(teamId):
 
 @app.route('/notification/add', methods=['POST'])
 def add_notification():
-	if not request.json or not 'senderId' in request.json or not 'receiverId' in request.json or not 'teamId' in request.json:
+	if not request.json or not 'senderId' in request.json \
+	or not 'receiverId' in request.json or not 'teamId' in request.json:
 		abort(400, '{"message":"Input parameter incorrect or missing"}')
 	senderId = request.json['senderId']
 	receiverId = request.json['receiverId']
