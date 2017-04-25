@@ -260,8 +260,6 @@ class MainPageViewController: UIViewController, UITableViewDelegate, UITableView
                 cell.status = "Can attend"
                 attendButton.isHidden = false
                 attendButton.setTitle("Attend", for: .normal)
-                attendButton.backgroundColor = .blue
-                attendButton.setTitleColor(.white, for: .normal)
                 attendButton.isEnabled = true
                 attendButton.addTarget(self, action: #selector(self.attendActivity(_:)), for: .touchUpInside)
                 attendButton.aid = currentActivity.aid!
