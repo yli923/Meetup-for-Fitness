@@ -52,19 +52,13 @@
         <div class="form-group">
             <div class="col-md-4 inputGroupContainer">
             <div class="input-group">
-                <span class="input-group-addon"><i class="glyphicon glyphicon-hand-up"></i></span>
+            <span class="input-group-addon"><i class="glyphicon glyphicon-hand-up"></i></span>
             <input id= "friendidd" name="friendname" placeholder="enter friend id please" class="form-control" type="text">
+            <button type="submit" id="submit_friend_request_button" class="button button1"> Find Friend <span class="glyphicon glyphicon-send"></span></button>
             </div>
-          </div>
+            </div>
         </div>
-
-        <div class="form-group">
-        <label class="col-md-4 control-label"></label>
-        <div class="col-md-4">
-          <button type="submit" id="submit_friend_request_button"class="btn btn-warning">Send <span class="glyphicon glyphicon-send"></span></button>
-        </div>
-        </div>
-
+        <p id = "potential_friend" class = "activity"> </p>
       </section>
 
     </div><!-- @end #content -->
@@ -257,10 +251,9 @@ $(function(){
        return(false);
     }
 
-    function sendrequest(variable,button)
+    function sendrequest(variable)
     {
-      button.appendChild(document.createTextNode('ed'));
-      button.setAttribute("disabled","disabled");
+
       var userId = getQueryVariable("userId");
       var formData = {
                 "friendId": JSON.stringify(variable),
@@ -327,12 +320,14 @@ $(function(){
           if (!result['notifications'][0]['teamId']) {
             text = document.createTextNode(result['notifications'][i]['username'][0] + " has send you a friend request————");
           } else {
-            text = document.createTextNode(result['notifications'][i]['tName'][0] + " has send you a team request    ");
+            text = document.createTextNode(result['notifications'][i]['tName'][0] + " has send you a team request—————");
           }
-            button = document.createElement("BUTTON");
-            button.appendChild(document.createTextNode('accept'));
-            button.setAttribute("onClick", "sendrequest(senderidd, button)");
 
+          button = document.createElement("BUTTON");
+          button.setAttribute("value", senderidd);
+          button.setAttribute("id", senderidd);
+          button.appendChild(document.createTextNode('Accept'));
+          button.setAttribute("onClick", "this.disabled=true; this.appendChild(document.createTextNode('ed')); sendrequest(value)");
           p.append(text);
           p.append(button);
           x.append(p);
@@ -388,7 +383,11 @@ $(function(){
           x.append(p);
         }
 </script>
+
+
+
 <script type="text/javascript" >
+// get potential friend list
     $(document).ready(function() {
     document.getElementById ("submit_friend_request_button").addEventListener("click", submit_new_friend_request, false);
 
@@ -405,49 +404,114 @@ $(function(){
        return(false);
 }
 
+
+ function sendrequest2(value,id) {
+      var userId = getQueryVariable("userId");
+      var formData = {
+        "receiverId": value,
+        "teamId": JSON.stringify(-1),
+        "senderId": userId,
+      }
+     $.ajax({
+        "data" : JSON.stringify(formData),
+        "async": false,
+        "crossDomain": true,
+        "url": "http://@ec2-52-7-74-13.compute-1.amazonaws.com/notification/add",
+        "method": "POST",
+        "headers": {
+          "content-type": "application/json",
+        },
+        "processData": false,
+        success: function(data){
+          console.log(data);
+          if(JSON.stringify(data)) {
+            alert("Your friend request is sent successfully, please refresh page");
+          }
+        },
+        error: function(jqxhr, textStatus, errorThrown){
+          console.log("error");
+          console.log(textStatus);
+          console.log(errorThrown);
+
+        }
+      });
+    return false;
+ }
+
 function submit_new_friend_request()
 {
+  var userId = getQueryVariable("userId");
+  var formData = {
+    "uName": $("#friendidd").val(),
+  }
+  var result;
+  $.ajax({
+    "data" : JSON.stringify(formData),
+    "async": false,
+    "crossDomain": true,
+    "url": "http://@ec2-52-7-74-13.compute-1.amazonaws.com/friends/search",
+    "method": "POST",
+    "headers": {
+      "content-type": "application/json",
+    },
+    "processData": false,
+    success: function(data){
+      result = data;
+    },
+    error: function(jqxhr, textStatus, errorThrown){
+      console.log("error");
+      console.log(textStatus);
+      console.log(errorThrown);
+    }
+  });
+  var x = document.getElementById("potential_friend");
+  var p;
+  var text;
+  var frienddid;
+  for (var i = 0; i < result['userNameList'].length; i++) {
+    p = document.createElement("P");
+    text = document.createTextNode(result['userNameList'][i]['username']);
+    frienddid = result['userNameList'][i]['userId'];
+    button2 = document.createElement("BUTTON");
+    button2.setAttribute("value", frienddid);
+    button2.setAttribute("id", frienddid);
+    button2.appendChild(document.createTextNode('Add'));
+    button2.setAttribute("onClick", "this.disabled=true; this.appendChild(document.createTextNode('ed')); sendrequest2(value, id)");
+    p.append(text);
+    p.append("_____");
+    p.append(button2);
+    x.append(p);
+    }
+  }
+</script>
 
-            var userId = getQueryVariable("userId");
-            console.log( userId );
-            var formData = {
-                "receiverId": $("#friendidd").val(),
-                "teamId": JSON.stringify(-1),
-                "senderId": userId,
-            }
-            console.log(JSON.stringify(formData));
+<style type="text/css">
 
-     $.ajax({
-//                "dataType": "json",
-                "data" : JSON.stringify(formData),
-                "async": false,
-                "crossDomain": true,
-                "url": "http://@ec2-52-7-74-13.compute-1.amazonaws.com/notification/add",
-                "method": "POST",
-                "headers": {
-                    "content-type": "application/json",
-                },
-
-                "processData": false,
-                success: function(data){
-                    console.log(data);
-                    if(JSON.stringify(data)) {
-                      alert("Your friend request is sent successfully, please refresh page");
-                    }
-
-                },
-
-                error: function(jqxhr, textStatus, errorThrown){
-                    console.log("error");
-                    console.log(textStatus);
-                    console.log(errorThrown);
-
-                }
-        });
-    return false;
-
+.button {
+    background-color: #4CAF50; /* Green */
+    border: none;
+    color: white;
+    padding: 3px 6px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    -webkit-transition-duration: 0.4s; /* Safari */
+    transition-duration: 0.4s;
+    cursor: pointer;
+}
+  .button1 {
+    background-color: white; 
+    color: black; 
+    border: 2px solid #4CAF50;
 }
 
-</script>
+.button1:hover {
+    background-color: #4CAF50;
+    color: white;
+}
+
+</style>>
 </body>
 </html>
