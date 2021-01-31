@@ -1,7 +1,17 @@
 #success_message{ display: none;}
 #time-se {
-    width: 94%;
+    width: 75%;
 }
 #se-control {
     width: 95%;
+}
+#sports-type {
+    width: 95%
+}
+#activity_info {
+    width: 90%
+}
+#team_name {
+    width: 95%
+
 }

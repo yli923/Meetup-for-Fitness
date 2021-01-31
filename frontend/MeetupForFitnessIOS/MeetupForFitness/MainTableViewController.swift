@@ -29,7 +29,7 @@ class MainTableViewController: UITableViewController {
     let kCloseCellHeight: CGFloat = 179
     let kOpenCellHeight: CGFloat = 415
 
-    let kRowsCount = 10
+    var kRowsCount = 10
     
     var cellHeights = [CGFloat]()
     
@@ -37,11 +37,14 @@ class MainTableViewController: UITableViewController {
     var shownActivities = [Activity]()
     var userId:Int!
 
+    @IBOutlet weak var teamActivitySegmentControl: UISegmentedControl!
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         createCellHeightsArray()
-        self.tableView.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
+        self.tableView.backgroundView = UIImageView(image: UIImage(named: "backgroundIamge"))
         
         userId = UserDefaults.standard.integer(forKey: "currentUserId")
     }
@@ -50,6 +53,24 @@ class MainTableViewController: UITableViewController {
         super.viewWillAppear(animated)
         
         self.downloadMyActivities()
+        
+        
+    }
+    
+    
+    @IBAction func teamActivityShown(_ sender: Any) {
+        switch teamActivitySegmentControl.selectedSegmentIndex {
+        case 0:
+            shownActivities = myActivities
+            self.createCellHeightsArray()
+            self.tableView.reloadData()
+        case 1:
+            filterOutPersonalInShownData()
+            self.createCellHeightsArray()
+            self.tableView.reloadData()
+        default:
+            break
+        }
     }
     
     func downloadMyActivities() {
@@ -78,16 +99,21 @@ class MainTableViewController: UITableViewController {
                         let maxAttendance = dict["maxPeople"] as! Int
                         let attendedIds = dict["attended"] as! [Int]
                         let location = dict["location"] as! String
+                        let username = (dict["username"] as! [String]).first
                         
                         var teamName:String!
                         if teamId == nil {
                             teamId = -1
                             teamName = ""
                         } else {
-                            teamName = teamNameArr!.first
+                            if teamNameArr != nil && (teamNameArr?.count)! > 0 {
+                                teamName = teamNameArr!.first
+                            } else {
+                                teamName = "Unknown"
+                            }
                         }
                         
-                        let newActivity = Activity(name: activityName, sportsType: sportsType!, teamName: teamName!, info: info, aid: aid, postTime: postTime, activityTime: activityTime, userId: userId, teamId: teamId!, maxAttendance: maxAttendance, attendedIds: attendedIds, location: location)
+                        let newActivity = Activity(name: activityName, sportsType: sportsType!, teamName: teamName!, username: username!, info: info, aid: aid, postTime: postTime, activityTime: activityTime, userId: userId, teamId: teamId!, maxAttendance: maxAttendance, attendedIds: attendedIds, location: location)
                         
                         self.myActivities.append(newActivity)
                         
@@ -97,7 +123,9 @@ class MainTableViewController: UITableViewController {
                         self.sortByDate()
                         self.storeActivitiesToLocal()
                         self.shownActivities = self.myActivities
+                        self.createCellHeightsArray()
                         self.tableView.reloadData()
+                        self.teamActivityShown(self)
                     })
                 }
             case .failure(let error):
@@ -129,6 +157,16 @@ class MainTableViewController: UITableViewController {
         UserDefaults.standard.synchronize()
     }
     
+    func filterOutPersonalInShownData() {
+        var filtered = [Activity]()
+        for activity in shownActivities {
+            if activity.teamId != -1 {
+                filtered.append(activity)
+            }
+        }
+        shownActivities = filtered
+    }
+    
     func sendAlart(info: String) {
         let alertController = UIAlertController(title: "Hey!", message: info, preferredStyle: UIAlertControllerStyle.alert)
         let okAction = UIAlertAction(title: "OK", style: UIAlertActionStyle.default) {
@@ -145,7 +183,12 @@ class MainTableViewController: UITableViewController {
     
     // MARK: configure
     func createCellHeightsArray() {
-        for _ in 0...kRowsCount {
+        cellHeights.removeAll()
+        kRowsCount = shownActivities.count
+        if kRowsCount <= 0 {
+            return
+        }
+        for _ in 0...kRowsCount-1 {
             cellHeights.append(kCloseCellHeight)
         }
     }
@@ -180,6 +223,20 @@ class MainTableViewController: UITableViewController {
         cell.ownerName = currentActivity.getOwnerName()
         cell.location = currentActivity.location
         cell.attended = currentActivity.getAttendedAmount()
+        
+        let isPersonalOrTeamLabel = cell.contentView.viewWithTag(4) as! UILabel
+        let organizorLabel = cell.contentView.viewWithTag(5) as! UILabel
+        if currentActivity.isPersonal() {
+            isPersonalOrTeamLabel.text = "Personal"
+            organizorLabel.text = "Organizor"
+            cell.contentView.viewWithTag(6)?.isHidden = true
+        } else {
+            isPersonalOrTeamLabel.text = "Team"
+            organizorLabel.text = "Leading team"
+            cell.contentView.viewWithTag(6)?.isHidden = false
+            let leaderLabel = cell.contentView.viewWithTag(6) as! UILabel
+            leaderLabel.text = "led by \(currentActivity.username!)"
+        }
         
         if currentActivity.isFull() {
             cell.status = "Full"

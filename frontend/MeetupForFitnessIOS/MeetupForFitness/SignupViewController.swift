@@ -20,6 +20,7 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        self.view.backgroundColor = UIColor(patternImage: UIImage(named: "backgroundIamge")!)
         userNameField.delegate = self
         emailField.delegate = self
         passwordField.delegate = self
@@ -68,7 +69,15 @@ class SignupViewController: UIViewController, UITextFieldDelegate {
                 }
             case .failure(let error):
                 print(error)
-                self.notifyFailure(info: "Cannot connect to server!")
+                if let httpResponse = response.response {
+                    if httpResponse.statusCode == 404 {
+                        self.notifyFailure(info: "This username already exists!")
+                    }else {
+                        self.notifyFailure(info: "Cannot connect to server!")
+                    }
+                } else {
+                    self.notifyFailure(info: "Cannot connect to server!")
+                }
             }
         }
     }

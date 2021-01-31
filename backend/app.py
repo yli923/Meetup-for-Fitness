@@ -62,7 +62,28 @@ def auth_signup():
 	else:
 		db.rollback()
 		db.close()
-		abort(400, '{fail: user exists!!!}')
+		abort(404, '{fail: user exists!!!}')
+
+@app.route('/auth/update/<userId>', methods=['POST'])
+def auth_update(userId):
+	if not request.json or not 'gender' in request.json or not 'email' in request.json or not 'description' in request.json:
+		abort(400, '{"message":"Input parameter incorrect or missing"}')
+	gender = request.json['gender']
+	email = request.json['email']
+	description = request.json['description']
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT * FROM User WHERE userId = '%s'"%userId)
+	if cursor.rowcount == 1:
+		cursor.execute("UPDATE User SET gender = %s,email = %s,description = %s WHERE userId = %s", [gender,email,description,userId])
+		db.commit()
+		db.close()
+		return("Success") 
+	else:
+		db.rollback()
+		db.close()
+		abort(400, 'fail')
+
 
 @app.route('/activity', methods=['GET'])
 def get_all_activity():	
@@ -85,6 +106,8 @@ def get_all_activity():
 			teamId = aRow[9]
 			attended=aRow[10]
 			sportsCur = db.cursor()
+ 			sportsCur.execute("SELECT username FROM User WHERE userId ='%s'"%userId)
+			username = [item[0] for item in sportsCur.fetchall()]
 			sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
 			sportsType = [item[0] for item in sportsCur.fetchall()]
 			sportsCur.execute("SELECT userId FROM AttendActivity WHERE aid = '%s'"%aid)
@@ -95,6 +118,7 @@ def get_all_activity():
 					attendList.append(a[0])
 			if teamId == -1:
 				currentActivity = {}
+				currentActivity['username'] = username
 				currentActivity['userId'] = userId
 				currentActivity['aid'] = aid
 				currentActivity['aName'] = aName
@@ -112,6 +136,7 @@ def get_all_activity():
 				tName = [item[0] for item in teamCur.fetchall()]
 				currentActivity = {}
 				currentActivity['userId'] = userId
+				currentActivity['username'] = username
 				currentActivity['aid'] = aid
 				currentActivity['aName'] = aName
 				currentActivity['aInfo'] = aInfo
@@ -155,6 +180,8 @@ def get_user_activity(userId):
 				teamId = aRow[9]
 				attended = aRow[10]
 				sportsCur = db.cursor()
+				sportsCur.execute("SELECT username FROM User WHERE userId ='%s'"%userId)
+				username = [item[0] for item in sportsCur.fetchall()]
 				sportsCur.execute("SELECT sportsType FROM SportsType WHERE sportsId = '%s'" %sportsId)
 				sportsType = [item[0] for item in sportsCur.fetchall()]
 				sportsCur.execute("SELECT userId FROM AttendActivity WHERE aid = '%s'"%aid)
@@ -165,6 +192,7 @@ def get_user_activity(userId):
 						attendList.append(a[0])
 				if teamId == -1:
 					currentActivity = {}
+					currentActivity['username'] = username
 					currentActivity['userId'] = uid
 					currentActivity['aid'] = aid
 					currentActivity['aName'] = aName
@@ -181,6 +209,7 @@ def get_user_activity(userId):
 					teamCur.execute("SELECT tName FROM TeamInfo WHERE teamId = '%s'" %teamId)
 					tName = [item[0] for item in teamCur.fetchall()]
 					currentActivity = {}
+					currentActivity['username'] = username
 					currentActivity['userId'] = uid
 					currentActivity['aid'] = aid
 					currentActivity['aName'] = aName
@@ -199,6 +228,39 @@ def get_user_activity(userId):
 	else:
 		db.close()
 		abort(404, '{"message":"no activity"}')
+
+@app.route('/activity/invite/<userId>',methods=['GET'])
+def get_user_invite(userId):
+	inviteList = []
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT aid FROM FriendInvite Where friendId = '%s'"%userId)
+	if cursor.rowcount > 0:
+		aList = [item[0] for item in cursor.fetchall()]
+		for a in aList:
+			aCur = db.cursor()
+			aCur.execute("SELECT teamId From Activity WHERE aid = '%s'"%a)
+			teamId = aCur.fetchall()[0]
+			aCur.execute("SELECT userId FROM AttendActivity WHERE aid = %s AND userId = %s",[a,userId])
+			if aCur.rowcount == 0:
+				aCur.execute("SELECT maxPeople,attended From Activity WHERE aid = '%s'"%a)
+				aRow = aCur.fetchall()[0]
+				maxPeople = int(aRow[0])
+				attended = int(aRow[1])
+				if attended < maxPeople:
+					inviteList.append(a)
+				else:
+					aCur.execute("DELETE FROM FriendInvite WHERE aid = %s AND friendId = %s AND teamId = %s",[a,userId,teamId])
+					db.commit()
+					
+			else:
+				aCur.execute("DELETE FROM FriendInvite WHERE aid = %s AND friendId = %s AND teamId = %s",[a,userId,teamId])
+				db.commit()
+		db.close()
+		return jsonify({'Activities Invited':inviteList})
+	else:
+		db.close()
+		abort(400,"fail")
 
 @app.route('/activity/attend',methods=['POST'])
 def attend_activity():
@@ -227,7 +289,9 @@ def attend_activity():
 
 @app.route('/activity/add/allInfo/<userId>', methods=['POST'])
 def add_activity(userId):
-	if not request.json or not 'aName' in request.json or not 'aInfo' in request.json or not 'location' in request.json or not 'aTime' in request.json or not 'sportsType' in request.json or not 'maxPeople' in request.json or not 'teamId' in request.json or not 'friendList' in request.json: 
+	if not request.json or not 'aName' in request.json or not 'aInfo' in request.json \
+	or not 'location' in request.json or not 'aTime' in request.json or not 'sportsType' in request.json \
+	or not 'maxPeople' in request.json or not 'teamId' in request.json or not 'friendList' in request.json: 
 		abort(400, '{"message":"Input parameter incorrect or missing"}')
 	aName = request.json['aName']
 	aInfo = request.json['aInfo']
@@ -243,16 +307,17 @@ def add_activity(userId):
 	cursor.execute("SELECT sportsId FROM SportsType WHERE sportsType = '%s'"%sportsType)
 	sportsId = [item[0] for item in cursor.fetchall()]
 	try:
-		cursor.execute("INSERT INTO Activity(userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,attended) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)",[userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,1])
+		cursor.execute("INSERT INTO Activity(userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,attended) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", \
+			[userId,aName,aInfo,location,aTime,postTime,sportsId,maxPeople,teamId,0])
 		aid = cursor.lastrowid
-		cursor.execute("INSERT INTO AttendActivity(userId, aid) values (%s,%s)",[userId,aid])
+		cursor.execute("INSERT INTO FriendInvite(aid,friendId,teamId) values (%s,%s,%s)",[aid,userId,teamId])
 		for friend in friendList:
 			friendCur = db.cursor()
-			friendCur.execute("INSERT INTO FriendInvite(aid,friendId) values (%s,%s)",[aid,friend])
+			friendCur.execute("INSERT INTO FriendInvite(aid,friendId,teamId) values (%s,%s,%s)",[aid,friend,teamId])
 		db.commit()
 		db.close()
 		return("success")
-	except:
+	except:	
 		db.rollback()
 		db.close()
 		abort(400,"fail")
@@ -274,16 +339,50 @@ def get_sportsType():
 @app.route('/friends/<userId>', methods=['GET'])
 def get_user_friends(userId):
 	friendList = []
+	result =[]
 	db = mysql.connect()
 	cursor = db.cursor()
 	cursor.execute("SELECT friendId FROM Friends WHERE userId = '%s'"%userId) 
 	if cursor.rowcount > 0:
 		friendList = [item[0] for item in cursor.fetchall()]
+		friendList = map(int, friendList)
+		for f in friendList:
+ 			friendCur = db.cursor()
+ 			friendCur.execute("SELECT userId,username FROM User WHERE userId ='%s'"%f)
+			temp = friendCur.fetchall()[0]
+			temp1 = {}
+			temp1["userId"] = temp[0]
+			temp1["username"] = temp[1]
+			result.append(temp1)
 		db.close()
-		return jsonify({'Friends List':friendList})
+		return jsonify({'Friends List':result})
 	else :
 		db.close()
 		abort(400,"fail")
+
+
+@app.route('/friends/search',methods=['POST'])
+def search_friends():
+	nameList = []
+	result = []
+	if not request.json or not 'uName' in request.json:
+		abort(400, '{"message":"Input parameter incorrect or missing"}')
+	uName = request.json['uName']
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT username FROM User")
+	nameList = [item[0] for item in cursor.fetchall()]
+	for n in nameList:
+		if uName.lower() in n.lower():
+			friendCur = db.cursor()
+			friendCur.execute("SELECT userId,username FROM User WHERE username ='%s'"%n)
+			temp = friendCur.fetchall()[0]
+			temp1 = {}
+			temp1["userId"] = temp[0]
+			temp1["username"] = temp[1]
+			result.append(temp1)
+	db.close()
+	return jsonify({'userNameList':result})
 
 @app.route('/friends/add/<userId>', methods=['POST'])
 def add_friends(userId):
@@ -304,37 +403,99 @@ def add_friends(userId):
 		db.close()
 		return("fail")
 
-
 @app.route('/teams/<userId>', methods=['GET'])
 def get_user_teams(userId):
-	teamsList = []
+	teamList = []
+	result =[]
 	db = mysql.connect()
 	cursor = db.cursor()
 	cursor.execute("SELECT teamId FROM TeamPlayer WHERE userId = '%s'"%userId) 
 	if cursor.rowcount > 0:
 		teamList = [item[0] for item in cursor.fetchall()]
+		teamList = map(int, teamList)
+		for t in teamList:
+ 			teamCur = db.cursor()
+ 			teamCur.execute("SELECT teamId,tName FROM TeamInfo WHERE teamId ='%s'"%t)
+			temp = teamCur.fetchall()[0]
+			temp1 = {}
+			temp1["teamId"] = temp[0]
+			temp1["tname"] = temp[1]
+			teamCur.execute("SELECT tName FROM TeamInfo WHERE userId = %s AND teamId = %s",[userId,t])
+			if teamCur.rowcount == 1:
+				temp1["isLeader"] = True
+			else:
+				temp1["isLeader"] = False
+			result.append(temp1)
 		db.close()
-		return jsonify({'Users Team List':teamList})
+		return jsonify({'Team List':result})
 	else :
 		db.close()
 		abort(400,"fail")
 
+@app.route('/teams/member/<teamId>', methods=['GET'])
+def get_team_member(teamId):
+	result = []
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT userId FROM TeamInfo WHERE teamId = '%s'"%teamId)
+	if cursor.rowcount == 1:
+		owner = [item[0] for item in cursor.fetchall()]
+	cursor.execute("SELECT userId FROM TeamPlayer WHERE teamId = '%s'"%teamId)
+	if cursor.rowcount > 0:
+		memberList = [item[0] for item in cursor.fetchall()]
+		for m in memberList:
+			mCur = db.cursor()
+ 			mCur.execute("SELECT userId,username FROM User WHERE userId ='%s'"%m)
+			temp = mCur.fetchall()[0]
+			temp2 = {}
+			temp2["userId"] = temp[0]
+			temp2["username"] = temp[1]
+			result.append(temp2)
+		db.close()
+		return jsonify({'Team Member List':result,'Team Leader':owner})
+	else:
+		db.close()
+		abort(400,"fail")
+
+@app.route('/teams/search',methods=['POST'])
+def search_team():
+	nameList = []
+	result = []
+	if not request.json or not 'tName' in request.json:
+		abort(400, '{"message":"Input parameter incorrect or missing"}')
+	tName = request.json['tName']
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT tName FROM TeamInfo")
+	nameList = [item[0] for item in cursor.fetchall()]
+	for n in nameList:
+		if tName.lower() in n.lower():
+			friendCur = db.cursor()
+			friendCur.execute("SELECT teamId,tName FROM TeamInfo WHERE tName ='%s'"%n)
+			temp = friendCur.fetchall()[0]
+			temp1 = {}
+			temp1["teamId"] = temp[0]
+			temp1["tName"] = temp[1]
+			result.append(temp1)
+	db.close()
+	return jsonify({'userNameList':result})
+
 @app.route('/teams/add/allInfo/<userId>', methods=['POST'])
 def add_team(userId):
-	if not request.json or not 'tName' in request.json or not 'tInfo' in request.json or not 'sportsType' in request.json or not 'tAvatarURL' in request.json: 
+	if not request.json or not 'tName' in request.json or not 'tInfo' in request.json or not 'sportsType' in request.json: 
 		abort(400, '{"message":"Input parameter incorrect or missing"}')
 	tName = request.json['tName']
 	tInfo = request.json['tInfo']
 	sportsType = request.json['sportsType']
-	tAvatarURL = request.json['tAvatarURL']
 	postTime = datetime.datetime.now()
 	db = mysql.connect()
 	cursor = db.cursor()
 	cursor.execute("SELECT sportsId FROM SportsType WHERE sportsType = '%s'"%sportsType)
 	sportsId = [item[0] for item in cursor.fetchall()]
 	try:
-		cursor.execute("INSERT INTO TeamInfo(userId,tName,tInfo,postTime,sportsId,tAvatarURL) values (%s,%s,%s,%s,%s,%s)",[userId,tName,tInfo,postTime,sportsId,tAvatarURL])
+		cursor.execute("INSERT INTO TeamInfo(userId,tName,tInfo,postTime,sportsId) values (%s,%s,%s,%s,%s)",[userId,tName,tInfo,postTime,sportsId])
 		teamId = cursor.lastrowid
+		cursor.execute("INSERT INTO TeamPlayer(userId,teamId) values (%s,%s)",[userId, teamId])
 		db.commit()
 		db.close()
 		return("success")
@@ -343,7 +504,7 @@ def add_team(userId):
 		db.close()
 		return("fail")
 
-@app.route('/team/add/member/<teamId>', methods=['POST'])
+@app.route('/teams/add/member/<teamId>', methods=['POST'])
 def add_team_member(teamId):
 	if not request.json or not 'userId' in request.json:
 		abort(400, '{"message":"Input parameter incorrect or missing"}')
@@ -361,6 +522,111 @@ def add_team_member(teamId):
 		db.close()
 		return("fail")
 
+@app.route('/notification/add', methods=['POST'])
+def add_notification():
+	if not request.json or not 'senderId' in request.json \
+	or not 'receiverId' in request.json or not 'teamId' in request.json:
+		abort(400, '{"message":"Input parameter incorrect or missing"}')
+	senderId = request.json['senderId']
+	receiverId = request.json['receiverId']
+	teamId = request.json['teamId']
+	postTime = datetime.datetime.now()
+	db = mysql.connect()
+	cursor = db.cursor()
+	try:
+		cursor.execute("SELECT * FROM Notification WHERE senderId = %s AND receiverId = %s AND teamId = %s",[senderId,receiverId,teamId])
+		if cursor.rowcount == 0:
+			cursor.execute("INSERT INTO Notification(senderId,receiverId,teamId,postTime) values(%s,%s,%s,%s)",[senderId,receiverId,teamId,postTime])
+			ntfyId = cursor.lastrowid
+			db.commit()
+			db.close()
+			return("success")
+		else:
+			db.close()
+			return("success")
+	except:
+		db.rollback()
+		db.close()
+		return("fail")
+
+
+@app.route('/notification/<receiverId>', methods=['GET'])
+def get_notification(receiverId):
+	notifyList = []
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT ntfyId FROM Notification WHERE receiverId = '%s'"%receiverId)
+	if cursor.rowcount > 0:
+		noList = cursor.fetchall()
+		for n in noList:
+			nCur = db.cursor()
+			nCur.execute("SELECT * FROM Notification WHERE ntfyId = '%s'"%n)
+			nList = nCur.fetchall() 
+			for nRow in nList:
+				ntfyId = nRow[0]
+				senderId = nRow[1]
+				receiverId = nRow[2]
+				teamId = nRow[3]
+				postTime = nRow[4]
+				nameCur = db.cursor()
+				nameCur.execute("SELECT username FROM User WHERE userId = '%s'" %senderId)
+				username = [item[0] for item in nameCur.fetchall()]
+				result = []
+				if teamId == -1:
+					mCur = db.cursor()
+					mCur.execute("SELECT * FROM Friends WHERE userId = %s AND friendId = %s",[senderId,receiverId])
+					if mCur.rowcount > 0:
+						pCur = db.cursor()
+						pCur.execute("DELETE FROM Notification WHERE ntfyId = '%s'"%ntfyId)
+						db.commit()
+					else: 
+						currentN = {}
+						currentN['ntfyId'] = ntfyId
+						currentN['senderId'] = senderId
+						currentN['username'] = username
+						currentN['postTime'] = postTime
+						notifyList.append(currentN)
+
+				else:
+					mCur = db.cursor()
+					mCur.execute("SELECT * FROM TeamPlayer WHERE userId = %s AND teamId = %s",[receiverId,teamId])
+					if mCur.rowcount == 0:
+						mCur.execute("SELECT tName FROM TeamInfo WHERE teamId = '%s'"%teamId)
+						tName = [item[0] for item in mCur.fetchall()]
+						currentN = {}
+						currentN['ntfyId'] = ntfyId
+						currentN['senderId'] = senderId
+						currentN['username'] = username
+						currentN['teamId'] = teamId
+						currentN['tName'] = tName
+						currentN['postTime'] = postTime
+						notifyList.append(currentN)
+					else:
+						mCur.execute("DELETE FROM Notification WHERE ntfyId = %s"%ntfyId)
+						db.commit()
+		db.close()
+		return jsonify({'notifications':notifyList})	
+	else: 
+		db.close()
+		abort(404, '{"message":"no notification"}')
+
+@app.route('/user/info/<userId>', methods=['GET'])
+def get_user_info(userId):
+	db = mysql.connect()
+	cursor = db.cursor()
+	cursor.execute("SELECT username,gender,email,description FROM User WHERE userId = '%s'"%userId)
+	if cursor.rowcount == 1:
+		infoList = cursor.fetchall()[0]
+		temp = {}
+		temp["username"] = infoList[0]
+		temp["gender"] = infoList[1]
+		temp["email"] = infoList[2]
+		temp["description"] = infoList[3]
+		db.close()
+		return jsonify({'Info':temp})
+	else:
+		db.close()
+		abort(404, 'no user exists')
 
 if __name__ == '__main__':
 	app.run(host='0.0.0.0',port='80')
